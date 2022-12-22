@@ -1,0 +1,64 @@
+Table "roles" {
+  "role" text [pk]
+}
+
+Table "languages" {
+  "language" text [pk]  
+}
+
+
+Table "units" {
+  "unit" text [pk]
+}
+
+Table "sections" {
+  "section" text [pk]
+}
+
+Table "users" {
+  "uuid" uuid [pk]
+  "email" text [unique, not null]
+  "hashedPassword" text [unique, not null]
+  "role" text [not null, ref: > roles.role]
+  "language" text [not null, ref: > languages.language]
+  "darkmode" boolean [not null]
+}
+
+Table "avatars" {
+  "user_uuid" uuid [pk, ref: <> users.uuid] 
+  "variant" text [not null]
+  color1 varchar(6) [not null]
+  color2 varchar(6) [not null]
+  color3 varchar(6) [not null]
+  color4 varchar(6) [not null]
+  color5 varchar(6) [not null]
+}
+
+Table "recipes" {
+  "uuid" uuid [pk]
+  "user_uuid" uuid [not null, ref: > users.uuid]
+  "recipe" text [not null]
+  "ingredient" text [not null]
+  "quantity" numeric [not null]
+  "unit" text [not null, ref: > units.unit]
+  "section" text [not null, ref: > sections.section]
+  "kCal" numeric [null]
+}
+
+Table "lists" {
+  "uuid" uuid [pk]
+  "title" text [not null]
+  "checked" boolean [not null]
+  "ingredient" text [not null]
+  "quantity" numeric [not null]
+  "unit" text [not null]
+}
+
+Table "list_recipe" {
+  "list_title" text 
+  "recipe" text 
+
+  Indexes {
+    (list_title, recipe) [pk]
+  }
+}
