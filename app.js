@@ -25,21 +25,19 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const supabase = require('./supabase')
-app.get('/', async (req, res, next)=>{
-let { data, error } = await supabase
-  .from('recipes')
-  .select('*')
-console.log(data)
-res.send(data)
-})
+//Passport_________________________________________________________________________________________________
+require('./passportConfigGoogle.js')(passport);
+//Passport_________________________________________________________________________________________________
 
-// app.use('/', require('./routes/index'));
-// app.use('/users', require('./routes/users'));
-// app.use('/products', require('./routes/products'));
-// app.use('/carts', require('./routes/carts'));
-// app.use('/checkout', require('./routes/checkout'));
-// app.use('/orders', require('./routes/orders'));
+
+app.use('/auth/google', require('./routes/authGoogle'));
+app.use('/auth/local', require('./routes/authLocal'));
+
+
+app.get("/logout", (req, res) => {  
+  req.logout();  
+  res.redirect("/");  
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, console.log(`Server started on port ${PORT}`));

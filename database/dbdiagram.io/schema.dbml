@@ -17,8 +17,10 @@ Table "sections" {
 
 Table "users" {
   "uuid" uuid [pk]
-  "email" text [unique, not null]
-  "hashedPassword" text [unique, not null]
+  "email" text [unique, null]
+  "hashedPassword" text [unique, null]
+  "googleId" text [unique, null]
+  "googleName" text [null]
   "role" text [not null, ref: > roles.role]
   "language" text [not null, ref: > languages.language]
   "darkmode" boolean [not null]
@@ -39,8 +41,8 @@ Table "recipes" {
   "user_uuid" uuid [not null, ref: > users.uuid]
   "recipe" text [not null]
   "ingredient" text [not null]
-  "quantity" numeric [not null]
-  "unit" text [not null, ref: > units.unit]
+  "quantity" numeric [null]
+  "unit" text [null]
   "section" text [not null, ref: > sections.section]
   "kCal" numeric [null]
 }
@@ -50,8 +52,8 @@ Table "lists" {
   "title" text [not null]
   "checked" boolean [not null]
   "ingredient" text [not null]
-  "quantity" numeric [not null]
-  "unit" text [not null]
+  "quantity" numeric [null]
+  "unit" text [null]
 }
 
 Table "list_recipe" {

@@ -14,19 +14,19 @@ INSERT INTO languages (language) VALUES
 ('ENG'),
 ('DEU');
 
-CREATE TABLE units (
-  unit text PRIMARY KEY
-);
+-- CREATE TABLE units (
+--   unit text PRIMARY KEY
+-- );
 
-INSERT INTO units (unit) VALUES 
-('ml'),
-('g'),
-('tsp'),
-('tbsp'),
-('bags'),
-('to taste'),
-('slices'),
-('servings');
+-- INSERT INTO units (unit) VALUES 
+-- ('ml'),
+-- ('g'),
+-- ('tsp'),
+-- ('tbsp'),
+-- ('bags'),
+-- ('to taste'),
+-- ('slices'),
+-- ('servings');
 
 CREATE TABLE sections (
   section text PRIMARY KEY

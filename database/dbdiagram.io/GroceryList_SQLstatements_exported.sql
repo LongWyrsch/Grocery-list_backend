@@ -16,8 +16,10 @@ CREATE TABLE "sections" (
 
 CREATE TABLE "users" (
   "uuid" uuid PRIMARY KEY,
-  "email" text UNIQUE NOT NULL,
-  "hashedPassword" text UNIQUE NOT NULL,
+  "email" text UNIQUE,
+  "hashedPassword" text UNIQUE,
+  "googleId" text UNIQUE,
+  "googleName" text,
   "role" text NOT NULL,
   "language" text NOT NULL,
   "darkmode" boolean NOT NULL
@@ -38,8 +40,8 @@ CREATE TABLE "recipes" (
   "user_uuid" uuid NOT NULL,
   "recipe" text NOT NULL,
   "ingredient" text NOT NULL,
-  "quantity" numeric NOT NULL,
-  "unit" text NOT NULL,
+  "quantity" numeric,
+  "unit" text,
   "section" text NOT NULL,
   "kCal" numeric
 );
@@ -49,8 +51,8 @@ CREATE TABLE "lists" (
   "title" text NOT NULL,
   "checked" boolean NOT NULL,
   "ingredient" text NOT NULL,
-  "quantity" numeric NOT NULL,
-  "unit" text NOT NULL
+  "quantity" numeric,
+  "unit" text
 );
 
 CREATE TABLE "list_recipe" (
@@ -75,7 +77,5 @@ ALTER TABLE "users_avatars" ADD FOREIGN KEY ("avatars_user_uuid") REFERENCES "av
 
 
 ALTER TABLE "recipes" ADD FOREIGN KEY ("user_uuid") REFERENCES "users" ("uuid");
-
-ALTER TABLE "recipes" ADD FOREIGN KEY ("unit") REFERENCES "units" ("unit");
 
 ALTER TABLE "recipes" ADD FOREIGN KEY ("section") REFERENCES "sections" ("section");
