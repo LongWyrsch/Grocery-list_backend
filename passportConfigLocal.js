@@ -4,45 +4,33 @@ const bcrypt = require('bcrypt');
 const supabase = require('./supabase');
 
 module.exports = function (passport) {
-  passport.use(
-    new LocalStrategy({ usernameField: 'email' }, async function (email, password, done) {
+	passport.use(
+		new LocalStrategy({ usernameField: 'email' }, async function (email, password, done) {
+			//Check if can match provided email with one of our users in the database.
+			let { data, error } = await supabase.from('users').select('*').eq('email', email);
 
-      //Check if can match provided email with one of our users in the database.
-      db.query('SELECT * FROM users WHERE email=$1', [email], async (error, results) => {
-        if (error) {
-          throw error;
-        } 
-        if (results.rows.length === 0) {
-          return done(null, false, { message: 'No user with that email' });
-        } else {
-          const user = results.rows[0];
-          try {
-            if (await bcrypt.compare(password, user.password)) {
-              return done(null, user);
-            } else {
-              //Email matched, but password did not match a user in our database.
-              return done(null, false, { message: 'Password incorrect' });
-            }
-          } catch (error) {
-            return done(error);
-          }
-        }
-      });
-    })
-  );
+			if (error) {
+				throw Error('Supabase failed to retrieving a user with matching email.');
+			} else if (data.length > 1) {
+                throw Error('Supabase returned more than 1 user matching a given email.');
+            } 
+            
+            if (data.length === 0) {
+                return done(null, false, { message: 'Supabased returned no user matching a given email' });
+			}
 
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
+			const user = data[0];
+			try {
+				if (await bcrypt.compare(password, user.hashedpassword)) {
+                    return done(null, user);
+				} else {
+					//Email matched, but password did not match a user in our database.
+					return done(null, false, { message: 'Password incorrect' });
+				}
+			} catch (error) {
+				return done(error);
+			}
+		})
+	);
 
-  passport.deserializeUser((id, done) => {
-    db.query('SELECT * FROM users WHERE id=$1', [id], (error, results) => {
-      if (error) {
-        throw error;
-      } else {
-        const user = results.rows[0];
-        done(null, user);
-      }
-    });
-  });
 };
