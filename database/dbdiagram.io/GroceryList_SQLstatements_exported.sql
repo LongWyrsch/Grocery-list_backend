@@ -28,11 +28,7 @@ CREATE TABLE "users" (
 CREATE TABLE "avatars" (
   "user_uuid" uuid PRIMARY KEY,
   "variant" text NOT NULL,
-  "color1" varchar(6) NOT NULL,
-  "color2" varchar(6) NOT NULL,
-  "color3" varchar(6) NOT NULL,
-  "color4" varchar(6) NOT NULL,
-  "color5" varchar(6) NOT NULL
+  "colors" varchar(6)[] NOT NULL
 );
 
 CREATE TABLE "recipes" (
@@ -43,7 +39,8 @@ CREATE TABLE "recipes" (
   "quantity" numeric,
   "unit" text,
   "section" text NOT NULL,
-  "kCal" numeric
+  "kCal" numeric,
+  "index" numeric NOT NULL
 );
 
 CREATE TABLE "lists" (
@@ -52,7 +49,8 @@ CREATE TABLE "lists" (
   "checked" boolean NOT NULL,
   "ingredient" text NOT NULL,
   "quantity" numeric,
-  "unit" text
+  "unit" text,
+  "index" numeric NOT NULL
 );
 
 CREATE TABLE "list_recipe" (

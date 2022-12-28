@@ -36,9 +36,16 @@ require('./passportConfigSerialize.js')(passport);
 require('./passportConfigGoogle.js')(passport);
 require('./passportConfigLocal.js')(passport);
 //Passport_________________________________________________________________________________________________
+																			const supabase = require('./supabase');
 
 app.use('/auth/google', require('./routes/authGoogle'));
 app.use('/auth/local', require('./routes/authLocal'));
+app.get('/test', async (req,res,next) => { 
+	// let { data, error } = await supabase.from('recipes').select("*").eq('recipe', 'dddd')
+	const { data, error } = await supabase.from('recipes').update({ recipe: 'updated name', ingredient: 'updated ingredient' }).eq('uuid', 'acfcf5bc-7a53-4b2a-b20e-c5b6d30ff311')
+console.log( data )
+  res.send(data)
+ })
 
 app.get('/logout', (req, res) => {
 	req.logout(function(err) {

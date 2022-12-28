@@ -5,30 +5,31 @@ const supabase = require('./supabase');
 
 module.exports = function (passport) {
 	passport.use(
-		new LocalStrategy({ usernameField: 'email' }, async function (email, password, done) {
+		new LocalStrategy({ usernameField: 'email' }, async function (email, password, cb) {
 			//Check if can match provided email with one of our users in the database.
 			let { data, error } = await supabase.from('users').select('*').eq('email', email);
 
 			if (error) {
-				throw Error('Supabase failed to retrieving a user with matching email.');
+				// throw Error('Supabase failed to retrieving a user with matching email.');
+				return cb(error)
 			} else if (data.length > 1) {
-                throw Error('Supabase returned more than 1 user matching a given email.');
+                return cb(new Error('Supabase returned more than 1 user matching a given email.'));
             } 
             
             if (data.length === 0) {
-                return done(null, false, { message: 'Supabased returned no user matching a given email' });
+                return cb(null, false, { message: 'Supabased returned no user matching a given email' });
 			}
 
 			const user = data[0];
 			try {
 				if (await bcrypt.compare(password, user.hashedpassword)) {
-                    return done(null, user);
+                    return cb(null, user);
 				} else {
 					//Email matched, but password did not match a user in our database.
-					return done(null, false, { message: 'Password incorrect' });
+					return cb(null, false, { message: 'Password incorrect' });
 				}
 			} catch (error) {
-				return done(error);
+				return cb(error);
 			}
 		})
 	);

@@ -18,8 +18,8 @@ router.post(
 	cors(corsOptions),
 	passport.authenticate('local', { failureRedirect: 'http://localhost:3001/loginlocal' }),
 	(req, res) => {
-		res.status(201).json({
-			msg: 'New user created!',
+		res.status(200).json({
+			msg: 'Login successful',
 			user,
 		})
 	}

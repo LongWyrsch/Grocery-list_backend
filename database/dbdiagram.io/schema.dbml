@@ -29,11 +29,7 @@ Table "users" {
 Table "avatars" {
   "user_uuid" uuid [pk, ref: <> users.uuid] 
   "variant" text [not null]
-  color1 varchar(6) [not null]
-  color2 varchar(6) [not null]
-  color3 varchar(6) [not null]
-  color4 varchar(6) [not null]
-  color5 varchar(6) [not null]
+  "colors" varchar(6)[] [not null]
 }
 
 Table "recipes" {
@@ -45,6 +41,7 @@ Table "recipes" {
   "unit" text [null]
   "section" text [not null, ref: > sections.section]
   "kCal" numeric [null]
+  "index" numeric [not null]
 }
 
 Table "lists" {
@@ -54,6 +51,7 @@ Table "lists" {
   "ingredient" text [not null]
   "quantity" numeric [null]
   "unit" text [null]
+  "index" numeric [not null]
 }
 
 Table "list_recipe" {

@@ -12,19 +12,20 @@ module.exports = function (passport) {
 			async function (accessToken, refreshToken, profile, cb) {
 				// User.findOrCreate({ googleId: profile.id }, function (err, user) {
 				let user = {};
-				let { data, error } = await supabase.from('users').select('*').eq('googleId', profile.id);
+				let { data, errorFindUser } = await supabase.from('users').select('*').eq('googleId', profile.id);
 
-				if (error) {
-					throw Error('Supabase failed to retrieving a user with matching Google id.');
+				if (errorFindUser) {
+					// Error('Supabase failed to retrieving a user with matching Google id.')
+					return cb(errorFindUser)
 				}
 
 				if (data.length > 1) {
 					//Error. Profile id should be unique.
-					throw Error('Supabase returned more than 1 user matching a given Google id.');
+					return cb(new Error('Supabase returned more than 1 user matching a given Google id.'))
 				} else if (data.length === 0) {
 					// add that user
 					let language = profile._json.locale.slice(0, 2) === 'en' ? 'ENG' : 'DEU';
-					const { data, error } = await supabase.from('users').insert([
+					const { data, errorInsertUser } = await supabase.from('users').insert([
 						{
 							role: 'user',
 							language: language,
@@ -34,9 +35,8 @@ module.exports = function (passport) {
 						},
 					]);
 
-					if (error) {
-						console.log(error);
-						return;
+					if (errorInsertUser) {
+						return cb(errorInsertUser);
 					}
 
 					user = {
@@ -46,7 +46,7 @@ module.exports = function (passport) {
 						googleId: profile.id,
 						googleName: profile.displayName,
 					};
-				} else {
+				} else if (data.length === 1) {
 					// return object containing that usert
 					user = {
 						role: data[0].role,
