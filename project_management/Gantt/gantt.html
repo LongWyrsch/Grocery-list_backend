@@ -1,0 +1,85 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="./styles.css" />
+	</head>
+	<body>
+		<pre class="mermaid">
+            gantt
+            title Grocery list
+            dateFormat YYYY-MM-DD
+            axisFormat %d
+            tickInterval 1day
+        
+            %% [Git] --> git commit --> red
+            %% ** --> notes in Obsidian --> bold
+
+            section UI/UX design
+                wireframe: done, wireframe, 2022-12-07, 1d
+                prototype: done, prototype, after wireframe, 2d
+                color: done, color, after prototype, 4h
+                logo: done, logo, after color, 1d
+                
+            section Front end 
+                Review React: done, rr, after logo, 7d
+                [Git] Initialize React project **: done, fip, after rr, 1d
+                Learn drag/drop in React: ldndr, after suedl, 4h
+                Learn lightdark mode in React: 4h
+                Learn language-picker in React: 4h
+                Learn CSS modules: 4h
+                Test food/kCal API: 2d
+                Test Material Components: 2d
+                Plan/diagram components, data type, data flow **: 1d
+                [Git] Add Google authentication page: 2d
+                [Git] Add local login page: 2d
+                %% Joi input validation
+                [Git] Add local registration page: 2d
+                %% Type password twice
+                %% Joi input validation
+                [Git] Add ligth dark mode: 3d
+                [Git] Add language picker: 3d
+                [Git] Add navbar: 1d
+                [Git] Add recipes page: 1d
+                [Git] Add lists page: 1d
+                [Git] Add user settings page: 1d
+                [Git] Add recipe create, modify, delete features: 1d
+                [Git] Add lsit create, modify, delete features: 1d
+                Avatar API: 2d
+                [Git] Main recipe & list feature: 2w
+                Food/kCal API: 3d
+                Accessibility: 3d
+            
+            section Back end
+                Schema relationship diagram: done, ard, 2022-12-17, 1d
+                Review Express session and Passport: done, resap, after ard, 3d
+                Set up SQL database: done, susd, after resap, 1d
+                [Git] Initialize Express project **: done, bip, after susd, 4h
+                Test Supabase API: done, tsa, after bip, 12h
+                [Git] Set up Google auth: done, suga, after tsa, 36h
+                [Git] Set up local auth: done, sula, 2022-12-25, 2d
+                [Git] Write OpenAPI: done, wo, after sula, 3d
+                [Git] Add endpoint PUT /users: done, aepu, after wo, 12h
+                [Git] Add endpoint DELETE /users: done, aedu, after aepu, 12h
+                [Git] Add endpoint PUT /avatars: aepa, after aedu, 12h
+                [Git] Add endpoint GET /recipes: aegr, after aepa, 12h
+                [Git] Add endpoint POST /recipes: aepor, after aegr, 12h
+                [Git] Add endpoint PUT /recipes: aepur, after aepor, 12h
+                [Git] Add endpoint DELETE /recipes: aedr, after aepur, 12h
+                [Git] Add endpoint GET /lists: aegl, after aedr, 12h
+                [Git] Add endpoint POST /lists: aepol, after aegl, 12h
+                [Git] Add endpoint PUT /lists: aepul, after aepol, 12h
+                [Git] Add endpoint DELETE /lists: aedl, after aepul, 12h
+
+            section Deploy
+                Deploy on Netlify: 12h
+                Update to HTTPS: 1d
+                Update all URLs: 12h
+                Update URLs in openAPI: 12h
+
+        </pre>
+		<script type="module">
+			import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
+			mermaid.initialize({ startOnLoad: true });
+		</script>
+		<script src="./myscript.js"></script>
+	</body>
+</html>

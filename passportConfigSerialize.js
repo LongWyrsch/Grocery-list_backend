@@ -1,4 +1,3 @@
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const supabase = require('./supabase');
 
 module.exports = function (passport) {

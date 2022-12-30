@@ -10,10 +10,6 @@ if (process.env.NODE_ENV !== 'production') {
 	require('dotenv').config();
 }
 
-// Needed because the POST request has custom header to send JSON object
-app.options('/auth/local/login', cors()) 
-app.options('/auth/local/register', cors()) 
-
 //Bodyparser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -36,16 +32,25 @@ require('./passportConfigSerialize.js')(passport);
 require('./passportConfigGoogle.js')(passport);
 require('./passportConfigLocal.js')(passport);
 //Passport_________________________________________________________________________________________________
-																			const supabase = require('./supabase');
+
+
+//Cors_________________________________________________________________________________________________
+// Needed because the POST request has custom header to send JSON object
+app.options('/auth/local/login', cors()) 
+app.options('/auth/local/register', cors()) 
+app.options('/users', cors()) 
+
+var corsOptions = {
+	origin: 'http://localhost:3001',
+	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions))
+//Cors_________________________________________________________________________________________________
 
 app.use('/auth/google', require('./routes/authGoogle'));
 app.use('/auth/local', require('./routes/authLocal'));
-app.get('/test', async (req,res,next) => { 
-	// let { data, error } = await supabase.from('recipes').select("*").eq('recipe', 'dddd')
-	const { data, error } = await supabase.from('recipes').update({ recipe: 'updated name', ingredient: 'updated ingredient' }).eq('uuid', 'acfcf5bc-7a53-4b2a-b20e-c5b6d30ff311')
-console.log( data )
-  res.send(data)
- })
+app.use('/users', require('./routes/users'))
+app.use('/avatars', require('./routes/avatars'))
 
 app.get('/logout', (req, res) => {
 	req.logout(function(err) {

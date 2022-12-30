@@ -92,8 +92,14 @@ paths:
                                     example: 123password
                 required: true
             responses:
-                '200':
+                '201':
                     description: 'User successfully authenticated'
+                '400':
+                  description: 'User with that email already exists.'
+                '500':
+                  description: 'Supabase returned more than 1 user matching a given email.'
+                '502':
+                  description: 'Database return an error'
     /users:
         put:
             tags:
