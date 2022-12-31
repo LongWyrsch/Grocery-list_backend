@@ -15,9 +15,9 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 		.eq('user_uuid', uuid);
 
 	if (error) {
-		errorMessage = new Error('Database update operation failed');
-		console.log(errorMessage);
-		console.error(error);
+		errorMessage = 'Database update operation failed';
+		console.error(errorMessage);
+		console.log(error);
 		res.status(502).send(errorMessage);
         return
 	}

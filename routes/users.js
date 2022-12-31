@@ -27,22 +27,30 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 
 router.delete('/', checkAuthenticated, async (req, res, next) => {
 	let uuid = req.user.uuid;
-	const { errorUser } = await supabase.from('users').delete().eq('uuid', uuid);
+
+    if (req.user.role  = 'admin') {
+        errorMessage = 'Cannot delete admin';
+		console.error(errorMessage);
+		res.status(502).send(errorMessage);
+        return
+    }
+
+	const errorUser  = await supabase.from('users').delete().eq('uuid', uuid).error;
 
 	if (errorUser) {
-		errorMessage = new Error('Database delete operation failed');
-		console.log(errorMessage);
-		console.error(errorUser);
+		errorMessage = 'Database delete operation failed';
+		console.error(errorMessage);
+		console.log(errorUser);
 		res.status(502).send(errorMessage);
         return
 	}
 
-    const { errorAvatar } = await supabase.from('avatars').delete().eq('user_uuid', uuid);
+    const errorAvatar  = await supabase.from('avatars').delete().eq('user_uuid', uuid).error;
 
 	if (errorAvatar) {
-		errorMessage = new Error('Database delete operation failed');
-		console.log(errorMessage);
-		console.error(errorAvatar);
+		errorMessage = 'Database delete operation failed';
+		console.error(errorMessage);
+		console.log(errorAvatar);
 		res.status(502).send(errorMessage);
         return
 	}
