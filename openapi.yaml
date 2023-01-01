@@ -273,9 +273,20 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ListIngredient'
+                type: object
+                properties:
+                  distinctLists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        distinctvalues:
+                          type: string
+                          example: 'Italian'
+                  allListIngredients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListIngredient'
         '204':
           description: 'User has no lists'
           content:
@@ -283,7 +294,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ListIngredient'
+                  type: string
+                example: []
         '502':
           description: 'Database select operation failed'
     post:
@@ -440,6 +452,10 @@ components:
         index:
           type: number
           example: 1
+        last_modified:
+          type: string
+          format: date-time
+          example: '2023-01-01 16:07:18.103861+00'
     Avatar:
       type: object
       properties:

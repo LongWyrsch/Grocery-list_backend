@@ -69,7 +69,8 @@ CREATE TABLE recipes (
   quantity numeric NULL,
   unit text NULL REFERENCES units(unit),
   section text NOT NULL REFERENCES sections(section),
-  kCal numeric
+  kCal numeric,
+  index int2 NOT NULL
 );
 
 CREATE TABLE lists (
@@ -81,6 +82,8 @@ CREATE TABLE lists (
   unit text NULL REFERENCES units(unit),
   user_uuid uuid NOT NULL REFERENCES users(uuid),
   section text NOT NULL REFERENCES sections(section),
+  index int2 NOT NULL,
+  last_modified timestamptz NOT NULL DEFAULT (now() at time zone 'utc')
 );
 
 CREATE TABLE lists_recipes (

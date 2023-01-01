@@ -52,6 +52,7 @@ app.use('/auth/local', require('./routes/authLocal'));
 app.use('/users', require('./routes/users'))
 app.use('/avatars', require('./routes/avatars'))
 app.use('/recipes', require('./routes/recipes'))
+app.use('/recipes', require('./routes/lists'))
 
 app.get('/logout', (req, res) => {
 	req.logout(function(err) {
