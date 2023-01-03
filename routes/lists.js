@@ -91,3 +91,5 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 
 	res.status(200);
 });
+
+module.exports = router;

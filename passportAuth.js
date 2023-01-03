@@ -3,7 +3,7 @@ function checkAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
-  res.redirect(401, 'http://localhost:3001/login')
+  res.redirect(401, 'http://localhost:3001/signin')
 }
 
 // If user access login page, make sure he's not already authenticated. If he is, redirect him to his Lists page.

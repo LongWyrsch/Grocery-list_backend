@@ -14,14 +14,14 @@ const supabase = require('../supabase');
 // 	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 // };
 
-router.post('/login', passport.authenticate('local', { failureRedirect: 'http://localhost:3001/loginlocal' }), (req, res) => {
+router.post('/signin', passport.authenticate('local', { failureRedirect: 'http://localhost:3001/signin' }), (req, res) => {
 	res.status(200).json({
 		msg: 'Login successful',
 		user: req.user,
 	})
 });
 
-router.post('/register', async (req, res) => {
+router.post('/signup', async (req, res) => {
 	const { email, password } = req.body;
 
 	let { data, error } = await supabase.from('users').select('*').eq('email', email);
