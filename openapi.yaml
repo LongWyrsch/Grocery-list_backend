@@ -68,6 +68,8 @@ paths:
       responses:
         '200':
           description: 'User successfully authenticated'
+        '400':
+          description: 'Wrong credentials provided'
   /auth/local/register:
     post:
       tags:
