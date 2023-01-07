@@ -22,7 +22,7 @@ CREATE TABLE "users" (
   "googleName" text,
   "role" text NOT NULL,
   "language" text NOT NULL,
-  "darkmode" boolean NOT NULL
+  "darktheme" boolean NOT NULL
 );
 
 CREATE TABLE "avatars" (

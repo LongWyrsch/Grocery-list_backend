@@ -29,7 +29,7 @@ module.exports = function (passport) {
 						{
 							role: 'user',
 							language: language,
-							darkmode: false,
+							darktheme: false,
 							googleId: profile.id,
 							googleName: profile.displayName,
 						},
@@ -42,7 +42,7 @@ module.exports = function (passport) {
 					user = {
 						role: 'user',
 						language: language,
-						darkmode: false,
+						darktheme: false,
 						googleId: profile.id,
 						googleName: profile.displayName,
 					};
@@ -51,7 +51,7 @@ module.exports = function (passport) {
 					user = {
 						role: data[0].role,
 						language: data[0].language,
-						darkmode: data[0].darkmode,
+						darktheme: data[0].darktheme,
 						googleId: data[0].googleId,
 						googleName: data[0].googleName,
 					};

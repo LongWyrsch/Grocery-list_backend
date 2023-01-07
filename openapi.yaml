@@ -381,7 +381,7 @@ components:
         language:
           type: string
           example: ENG
-        darkmode:
+        darktheme:
           type: boolean
           example: false
         googleId:

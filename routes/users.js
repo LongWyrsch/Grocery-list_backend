@@ -5,6 +5,16 @@ const supabase = require('../supabase');
 
 const { checkAuthenticated, checkNotAuthenticated } = require('../passportAuth');
 
+router.get('/', checkAuthenticated, async (req, res, next) => {
+    const user = {
+		email: req.user.email,
+		language: req.user.language,
+		darktheme: req.user.darktheme,
+		googleName: req.user.googleName
+	}
+	res.status(200).send(user)
+})
+
 router.put('/', checkAuthenticated, async (req, res, next) => {
 	let uuid = req.user.uuid;
 	let columnName = req.body.columnName;
@@ -22,7 +32,7 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
         return
 	}
 
-    res.status(200).send('User successfully updated')
+    res.status(200).send({ [columnName]: newValue })
 });
 
 router.delete('/', checkAuthenticated, async (req, res, next) => {

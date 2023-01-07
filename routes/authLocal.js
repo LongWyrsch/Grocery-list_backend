@@ -20,10 +20,16 @@ router.post(
 	'/signin',
 	passport.authenticate('local', { failureRedirect: 'http://localhost:3001/signin' }),
 	(req, res) => {
-		res.status(200).json({
-			msg: 'Login successful',
-			user: req.user,
-		});
+		res.status(200).redirect('http://localhost:3001/lists')
+		// res.status(200).json({
+		// 	msg: 'Login successful',
+		// 	user: {
+		// 		email: req.user.email,
+		// 		language: req.user.language,
+		// 		darktheme: req.user.darktheme,
+		// 		googleName: '',
+		// 	}
+		// });
 	}
 );
 
@@ -58,14 +64,14 @@ router.post('/signup', async (req, res) => {
 		return;
 	} else if (data.length === 0) {
 		// add that user
-		let language = 'ENG';
+		let language = 'EN';
 		let hashedPassword = await bcrypt.hash(password, 10);
 		let newUser = {
 			email: email,
 			hashedpassword: hashedPassword,
 			role: 'user',
 			language: language,
-			darkmode: false,
+			darktheme: false,
 		};
 		const { dataInserted, errorInserted } = await supabase.from('users').insert([newUser]);
 
@@ -76,10 +82,16 @@ router.post('/signup', async (req, res) => {
 			return;
 		}
 
-		res.status(201).json({
-			msg: 'New user created!',
-			user: newUser,
-		});
+		res.status(201).redirect('http://localhost:3001/lists')
+		// res.status(201).json({
+		// 	msg: 'New user created!',
+		// 	user: {
+		// 		email: newUser.email,
+		// 		language: newUser.language,
+		// 		darktheme: newUser.darktheme,
+		// 		googleName: '',
+		// 	}
+		// });
 	}
 });
 

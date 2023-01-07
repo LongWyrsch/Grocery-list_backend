@@ -23,7 +23,7 @@ Table "users" {
   "googleName" text [null]
   "role" text [not null, ref: > roles.role]
   "language" text [not null, ref: > languages.language]
-  "darkmode" boolean [not null]
+  "darktheme" boolean [not null]
 }
 
 Table "avatars" {

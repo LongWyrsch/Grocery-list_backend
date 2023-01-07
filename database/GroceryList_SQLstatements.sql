@@ -47,12 +47,12 @@ CREATE TABLE users (
   hashedPassword text UNIQUE NULL,
   role text NOT NULL DEFAULT 'user' REFERENCES roles(role),
   language text NOT NULL REFERENCES languages(language),
-  darkmode boolean NOT NULL,
+  darktheme boolean NOT NULL,
   googleId text UNIQUE NULL,
   googleName text NULL
 );
 
-INSERT INTO users (email, hashedPassword, role, language, darkmode) VALUES
+INSERT INTO users (email, hashedPassword, role, language, darktheme) VALUES
 ('long.nqw@gmail.com', '$2a$10$doYnT6kWg419.vCB7EO2K.6mLpP1Xyg2JmoLSohOLyJ5WlvPPz9t.', 'admin', 'ENG', true);
 
 CREATE TABLE avatars (
