@@ -7,7 +7,9 @@ const passport = require('passport');
 
 const supabase = require('../supabase');
 
-import { signupValidation, signinValidation } from '../validator';
+const { randomColorArray } = require('../utils/randomColorsArray');
+
+const { signupValidation, signinValidation } = require('../utils/validator');
 
 // I temp commented this section. I moved the cors option middleware the app.js so I don't have to add it in every .js routes.
 // var cors = require('cors');
@@ -20,21 +22,13 @@ router.post(
 	'/signin',
 	passport.authenticate('local', { failureRedirect: 'http://localhost:3001/signin' }),
 	(req, res) => {
-		res.status(200).redirect('http://localhost:3001/lists')
-		// res.status(200).json({
-		// 	msg: 'Login successful',
-		// 	user: {
-		// 		email: req.user.email,
-		// 		language: req.user.language,
-		// 		darktheme: req.user.darktheme,
-		// 		googleName: '',
-		// 	}
-		// });
+		res.status(200).send('test')
 	}
 );
 
+
 router.post('/signup', async (req, res) => {
-	const { email, password } = req.body;
+	const { email, password, darktheme, language } = req.body;
 
 	//Validate user input before calling database
 	const validate = signupValidation(req.body);
@@ -64,25 +58,26 @@ router.post('/signup', async (req, res) => {
 		return;
 	} else if (data.length === 0) {
 		// add that user
-		let language = 'EN';
 		let hashedPassword = await bcrypt.hash(password, 10);
 		let newUser = {
 			email: email,
 			hashedpassword: hashedPassword,
 			role: 'user',
 			language: language,
-			darktheme: false,
+			darktheme: darktheme,
+			avatar_variant: "beam",
+			avatar_colors: randomColorArray()
 		};
-		const { dataInserted, errorInserted } = await supabase.from('users').insert([newUser]);
+		const insertUser = await supabase.from('users').insert([newUser]);
 
-		if (errorInserted) {
+		if (insertUser.error) {
 			errorMessage = 'Database failed to create new user.';
-			console.log(errorInserted);
+			console.log(insertUser.error);
 			res.status(502).send(errorMessage);
 			return;
 		}
 
-		res.status(201).redirect('http://localhost:3001/lists')
+		res.status(201).send()
 		// res.status(201).json({
 		// 	msg: 'New user created!',
 		// 	user: {

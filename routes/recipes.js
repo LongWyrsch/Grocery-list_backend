@@ -3,7 +3,7 @@ const router = express.Router();
 
 const supabase = require('../supabase');
 
-const { checkAuthenticated, checkNotAuthenticated } = require('../passportAuth');
+const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
 	const distinctRecipes = await supabase.rpc('select_distinct', { querycolumn: 'recipe', useruuid: req.user.uuid });
@@ -37,6 +37,7 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 
 router.post('/', checkAuthenticated, async (req, res, next) => {
 	let insertIngredients = req.body;
+
 	const { error } = await supabase.from('recipes').insert(insertIngredients);
 
 	if (error) {
@@ -68,8 +69,8 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 });
 
 router.delete('/', checkAuthenticated, async (req, res, next) => {
-	let uuidToDelete = req.query.uuid;
-	let recipeToDelete = req.query.recipe;
+	let uuidToDelete = req.query.uuid; // Delete some ingredients from a recipe
+	let recipeToDelete = req.query.recipe; // Delete an entire recipe
 
     let operationError
 

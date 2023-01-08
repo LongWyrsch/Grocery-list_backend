@@ -7,7 +7,7 @@ router.get('/', passport.authenticate('google', { scope: ['profile'] }));
 
 router.get('/callback', passport.authenticate('google', { failureRedirect: '/signin' }), (req, res) => {
 	// Successful authentication, redirect home.
-	res.status(200).redirect('http://localhost:3001/lists')
+	res.status(200).redirect('http://localhost:3001/home/lists')
 });
 
 module.exports = router;

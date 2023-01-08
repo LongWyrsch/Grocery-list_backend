@@ -28,9 +28,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Passport_________________________________________________________________________________________________
-require('./passportConfigSerialize.js')(passport);
-require('./passportConfigGoogle.js')(passport);
-require('./passportConfigLocal.js')(passport);
+require('./passport/passportConfigGoogle.js')(passport);
+require('./passport/passportConfigLocal.js')(passport);
+require('./passport/passportConfigSerialize.js')(passport);
 //Passport_________________________________________________________________________________________________
 
 
@@ -41,6 +41,7 @@ app.options('/auth/local/register', cors())
 app.options('/users', cors()) 
 
 var corsOptions = {
+	credentials: true,
 	origin: 'http://localhost:3001',
 	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
@@ -50,14 +51,13 @@ app.use(cors(corsOptions))
 app.use('/auth/google', require('./routes/authGoogle'));
 app.use('/auth/local', require('./routes/authLocal'));
 app.use('/users', require('./routes/users'))
-app.use('/avatars', require('./routes/avatars'))
 app.use('/recipes', require('./routes/recipes'))
 app.use('/recipes', require('./routes/lists'))
 
 app.get('/logout', (req, res) => {
 	req.logout(function(err) {
     if (err) { return next(err); }
-    res.redirect('http://localhost:3001/');
+    res.status(200).send();
   });
 });
 

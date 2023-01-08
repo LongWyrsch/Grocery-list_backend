@@ -92,6 +92,12 @@ paths:
                   type: string
                   format: password
                   example: 123password
+                language:
+                  type: string
+                  example: 'EN'
+                darkmode:
+                  type: boolean
+                  example: false
         required: true
       responses:
         '201':
@@ -103,6 +109,21 @@ paths:
         '502':
           description: 'Database return an error'
   /users:
+    get:
+      tags:
+        - users
+      summary: Get user
+      description: Get user
+      operationId: getUser
+      responses:
+        '200':
+          description: User fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '502':
+          description: 'Database select operation failed'
     put:
       tags:
         - users
@@ -110,19 +131,7 @@ paths:
       description: Update user
       operationId: updateUser
       requestBody:
-        description: User properties to update
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                columnName:
-                  type: string
-                  example: 'email'
-                newValue:
-                  type: string
-                  example: 'newemail@domain.com'
+        $ref: '#/components/requestBodies/User'
       responses:
         '200':
           description: User successfully updated
@@ -139,36 +148,6 @@ paths:
           description: User successfully deleted
         '502':
           description: 'Database delete operation failed'
-  /avatars:
-    put:
-      tags:
-        - avatar
-      summary: Update avatar
-      description: Update avatar
-      operationId: updateAvatar
-      requestBody:
-        description: Avatar properties to update
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                variant:
-                  type: string
-                  example: 'marble'
-                colors:
-                  type: array
-                  items:
-                    type: string
-                    example: '#92A1C6'
-                  minItems: 5
-                  maxItems: 5
-      responses:
-        '200':
-          description: Avatar successfully updated
-        '502':
-          description: 'Database update operation failed'
   /recipes:
     get:
       tags:
@@ -363,33 +342,29 @@ components:
     User:
       type: object
       properties:
-        uuid:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
         email:
           type: string
           format: email
           example: 'example@domain.com'
-        hashedpassword:
-          type: string
-          format: password
-          example: '$2a$10$oRNpb2somlvHF3CFHQvJ4OGD5Bq18W2CkFGtrRh5KjD1VgQ/jBUna'
-        role:
-          type: string
-          example: user
         language:
           type: string
           example: ENG
-        darktheme:
+        darkmode:
           type: boolean
           example: false
-        googleId:
-          type: string
-          example: '1234567890123456789'
         googleName:
           type: string
           example: John Smith
+        avatarVariant:
+          type: string
+          example: marble
+        avatarColors:
+          type: array
+          items:
+            type: string
+            example: '#92A1C6'
+          minItems: 5
+          maxItems: 5
     RecipeIngredient:
       type: object
       properties:
@@ -458,21 +433,6 @@ components:
           type: string
           format: date-time
           example: '2023-01-01 16:07:18.103861+00'
-    Avatar:
-      type: object
-      properties:
-        user_uuid:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
-        variant:
-          type: string
-          example: marble
-        colors:
-          type: array
-          items:
-            type: string
-            example: '#92A1C6'
   requestBodies:
     Recipe:
       description: Recipe ingredients that needs to be added to updated
@@ -492,17 +452,17 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ListIngredient'
-    Avatar:
-      description: Avatar properties to update
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Avatar'
     User:
       description: User properties to update
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/User'
+            type: object
+            properties:
+              some column:
+                type: string
+                example: 'value'
+              some other column:
+                type: string
+                example: 'value'

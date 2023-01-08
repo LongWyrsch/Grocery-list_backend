@@ -11,8 +11,9 @@ CREATE TABLE languages (
 );
 
 INSERT INTO languages (language) VALUES 
-('ENG'),
-('DEU');
+('DE');
+('EN'),
+('FR')
 
 -- CREATE TABLE units (
 --   unit text PRIMARY KEY
@@ -46,20 +47,16 @@ CREATE TABLE users (
   email text UNIQUE NULL,
   hashedPassword text UNIQUE NULL,
   role text NOT NULL DEFAULT 'user' REFERENCES roles(role),
-  language text NOT NULL REFERENCES languages(language),
-  darktheme boolean NOT NULL,
+  language text NOT NULL REFERENCES languages(language) DEFAULT 'EN',
+  darktheme boolean NOT NULL DEFAULT false,
   googleId text UNIQUE NULL,
   googleName text NULL
+  avatarVariant text NOT NULL,
+  avatarColors varchar(6)[] NOT NULL
 );
 
 INSERT INTO users (email, hashedPassword, role, language, darktheme) VALUES
-('long.nqw@gmail.com', '$2a$10$doYnT6kWg419.vCB7EO2K.6mLpP1Xyg2JmoLSohOLyJ5WlvPPz9t.', 'admin', 'ENG', true);
-
-CREATE TABLE avatars (
-  user_uuid uuid PRIMARY KEY REFERENCES users(uuid),
-  variant text NOT NULL,
-  colors varchar(6)[] NOT NULL
-);
+('long.nqw@gmail.com', '$2a$10$doYnT6kWg419.vCB7EO2K.6mLpP1Xyg2JmoLSohOLyJ5WlvPPz9t.', 'admin', 'EN', true);
 
 CREATE TABLE recipes (
   uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),

@@ -20,15 +20,11 @@ CREATE TABLE "users" (
   "hashedPassword" text UNIQUE,
   "googleId" text UNIQUE,
   "googleName" text,
-  "role" text NOT NULL,
-  "language" text NOT NULL,
-  "darktheme" boolean NOT NULL
-);
-
-CREATE TABLE "avatars" (
-  "user_uuid" uuid PRIMARY KEY,
-  "variant" text NOT NULL,
-  "colors" varchar(6)[] NOT NULL
+  "role" text NOT NULL DEFAULT 'user',
+  "language" text NOT NULL DEFAULT 'EN',
+  "darktheme" boolean NOT NULL DEFAULT false
+  "avatarVariant" text NOT NULL,
+  "avatarColors" varchar(6)[] NOT NULL
 );
 
 CREATE TABLE "recipes" (

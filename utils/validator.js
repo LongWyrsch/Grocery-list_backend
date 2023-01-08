@@ -14,5 +14,5 @@ const signinSchema = Joi.object({
     password: Joi.string().min(6).pattern(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/).required()
 })
 
-exports.signupValidation = validator(registerSchema);
-exports.signinValidation = validator(signinSchema);
+module.exports.signupValidation = validator(registerSchema);
+module.exports.signinValidation = validator(signinSchema);

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const supabase = require('../supabase');
 
-const { checkAuthenticated, checkNotAuthenticated } = require('../passportAuth');
+const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
 	const distinctLists = await supabase.rpc('select_distinct', { querycolumn: 'list', useruuid: req.user.uuid });
@@ -74,7 +74,7 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
     let operationError
 
     if (uuidToDelete) {
-	    const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete);
+		const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete);
         operationError = error
     } else if (listToDelete) {
         const { error } = await supabase.from('lists').delete().eq('title', listToDelete).eq('user_uuid', req.user.uuid);

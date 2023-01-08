@@ -21,15 +21,11 @@ Table "users" {
   "hashedPassword" text [unique, null]
   "googleId" text [unique, null]
   "googleName" text [null]
-  "role" text [not null, ref: > roles.role]
-  "language" text [not null, ref: > languages.language]
-  "darktheme" boolean [not null]
-}
-
-Table "avatars" {
-  "user_uuid" uuid [pk, ref: <> users.uuid] 
-  "variant" text [not null]
-  "colors" varchar(6)[] [not null]
+  "role" text [not null, ref: > roles.role, default: 'user']
+  "language" text [not null, ref: > languages.language, default: 'EN']
+  "darktheme" boolean [not null, default: false]
+  "avatarVariant" text [not null]
+  "avatarColors" varchar(6)[] [not null]
 }
 
 Table "recipes" {
