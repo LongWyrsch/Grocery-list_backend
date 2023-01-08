@@ -17,12 +17,12 @@ module.exports = function (passport) {
 
 				if (error) {
 					// Error('Supabase failed to retrieving a user with matching Google id.')
-					return cb(error.message);
+					return cb(error);
 				}
 
 				if (data.length > 1) {
 					//Error. Profile id should be unique.
-					return cb(new Error('Supabase returned more than 1 user matching a given Google id.'));
+					return cb(null, false, {message: 'Database returned more than 1 user matching a given Google id.'});
 				} else if (data.length === 0) {
 					// add that user
 					let language = ''
@@ -48,7 +48,7 @@ module.exports = function (passport) {
 					const insertUser = await supabase.from('users').insert([newUser]);
 
 					if (insertUser.error) {
-						return cb(insertUser.error.message);
+						return cb(error.message);
 					}
 
 					user = newUser;

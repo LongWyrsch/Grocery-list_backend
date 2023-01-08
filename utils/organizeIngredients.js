@@ -1,31 +1,20 @@
-const { all } = require("../routes/lists");
+function organizeIngredients(cardType, allIngredients) {
+	let groupType = cardType === 'lists' ? 'title' : 'recipe';
+    let organizedObject = {};
+	let organizedArray = [];
 
-function organizeIngredients(cardType, distinctGroup, allIngredients) {
-    let splitCriteria = cardType==='lists'? 'title' : 'recipe'
-    let organizedArray = []
-    distinctGroup.forEach(group => {
-        allIngredients.
-    });    
+	allIngredients.forEach((ingredients) => {
+        // Ex: obj = { Lasagna : [{Ingredient:'Cheese', ...}] }
+        //  obj.Lasagna = obj.Lasagna? [...obj.Lasagna, newIngredient] : [newIngredient]
+		organizedObject[ingredients[groupType]] = organizedObject[ingredients[groupType]]
+			? [...organizedObject[ingredients[groupType]], ingredients]
+			: [ingredients];
+	});
 
-    allIngredients.forEach((ingredient) => { 
-        ingredient[splitCriteria]
-     })
+    // Convert { Lasagna: [{ingredient}, {ingredient},...] } to [ [{ingredient}, {ingredient},...], [{ingredient}, {ingredient},...],...]
+	organizedArray = Object.values(organizedObject);
 
-     distinctGroup.map(object=>{
-        object[splitCriteria]
-     })
-
-
-
-
-
-
-    return organizedArray
+	return organizedArray;
 }
 
-
-
-
-
-
-module.exports = organizeIngredients
+module.exports = organizeIngredients;

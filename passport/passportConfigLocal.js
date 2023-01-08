@@ -10,7 +10,7 @@ module.exports = function (passport) {
 		new LocalStrategy({ usernameField: 'email' }, async function (email, password, done) {
 			//Validate user input before calling database
 			const validate = signinValidation({ email: email, password: password });
-			if (validate.error) return done(new Error(validate.error.details[0].message));
+			if (validate.error) return done(null, false, {message: validate.error.details[0].message});
 
 			//Check if can match provided email with one of our users in the database.
 			let { data, error } = await supabase.from('users').select('*').eq('email', email);
@@ -19,11 +19,11 @@ module.exports = function (passport) {
 				// throw Error('Supabase failed to retrieving a user with matching email.');
 				return done(error);
 			} else if (data.length > 1) {
-				return done(new Error('Supabase returned more than 1 user matching a given email.'));
+				return done(null, false, {message: 'Database returned more than 1 user matching a given email.'});
 			}
 
 			if (data.length === 0) {
-				return done(null, false, { message: 'Supabased returned no user matching a given email' });
+				return done(null, false, { message: 'Database returned no user matching a given email' });
 			}
 
 			const user = data[0];

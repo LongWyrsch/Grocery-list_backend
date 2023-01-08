@@ -52,12 +52,13 @@ app.use('/auth/google', require('./routes/authGoogle'));
 app.use('/auth/local', require('./routes/authLocal'));
 app.use('/users', require('./routes/users'))
 app.use('/recipes', require('./routes/recipes'))
-app.use('/recipes', require('./routes/lists'))
+app.use('/lists', require('./routes/lists'))
 
 app.get('/logout', (req, res) => {
 	req.logout(function(err) {
     if (err) { return next(err); }
-    res.status(200).send();
+	res.redirect('http://localhost:3001/signin');
+    // res.status(200).send();
   });
 });
 

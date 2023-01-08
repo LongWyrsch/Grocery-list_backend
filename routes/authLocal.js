@@ -7,7 +7,7 @@ const passport = require('passport');
 
 const supabase = require('../supabase');
 
-const { randomColorArray } = require('../utils/randomColorsArray');
+const randomColorArray = require('../utils/randomColorsArray');
 
 const { signupValidation, signinValidation } = require('../utils/validator');
 
@@ -18,20 +18,34 @@ const { signupValidation, signinValidation } = require('../utils/validator');
 // 	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 // };
 
-router.post(
-	'/signin',
-	passport.authenticate('local', { failureRedirect: 'http://localhost:3001/signin' }),
-	(req, res) => {
-		res.status(200).send('test')
-	}
-);
+// I was confused by the (req,res,next) appended at the end of passport.authenticate(...).
+// passport.authenticate(...) is a function returning a middleware. Like all middleware, you must pass it req,res and next.
+// Without next, it cannot call the next middleware in the stack.
+router.post('/signin', (req, res, next) => {
+	passport.authenticate('local', (err, user, options) => {
+		if (err) return next(err); // will generate a 500 error
 
+		if (typeof options !== 'undefined') {
+			// Can also generate a JSON response reflecting authentication status
+			console.log(res.locals.errMessage);
+			return res.status(403).send();
+		}
+		
+		// The app uses a custom callback so that it can access the error messages. Therfore, the login() function must be manually implemented.
+		req.login(user, (loginErr) => {
+			if (loginErr) {
+				return next(loginErr);
+			}
+			return res.status(200).send();
+		});
+	})(req, res, next);  // <<== appended (req,res,next). Explanation above.
+});
 
 router.post('/signup', async (req, res) => {
 	const { email, password, darktheme, language } = req.body;
 
 	//Validate user input before calling database
-	const validate = signupValidation(req.body);
+	const validate = signupValidation({email: req.body.email, password: req.body.password});
 	if (validate.error) return res.status(400).send(validate.error.details[0].message);
 
 	let { data, error } = await supabase.from('users').select('*').eq('email', email);
@@ -54,7 +68,7 @@ router.post('/signup', async (req, res) => {
 	} else if (data.length === 1) {
 		errorMessage = 'User with that email already exists.';
 		console.log(errorMessage);
-		res.status(400).send(errorMessage);
+		res.status(403).send(errorMessage);
 		return;
 	} else if (data.length === 0) {
 		// add that user
@@ -65,8 +79,8 @@ router.post('/signup', async (req, res) => {
 			role: 'user',
 			language: language,
 			darktheme: darktheme,
-			avatar_variant: "beam",
-			avatar_colors: randomColorArray()
+			avatarVariant: 'beam',
+			avatarColors: randomColorArray(),
 		};
 		const insertUser = await supabase.from('users').insert([newUser]);
 
@@ -77,7 +91,7 @@ router.post('/signup', async (req, res) => {
 			return;
 		}
 
-		res.status(201).send()
+		res.status(201).send();
 		// res.status(201).json({
 		// 	msg: 'New user created!',
 		// 	user: {
