@@ -6,55 +6,47 @@ Table "languages" {
   "language" text [pk]  
 }
 
-
-Table "units" {
-  "unit" text [pk]
-}
-
 Table "sections" {
   "section" text [pk]
 }
 
 Table "users" {
-  "uuid" uuid [pk]
+  "uuid" uuid [pk, default: `uuid_generate_v4()`]
   "email" text [unique, null]
-  "hashedPassword" text [unique, null]
-  "googleId" text [unique, null]
-  "googleName" text [null]
-  "role" text [not null, ref: > roles.role, default: 'user']
-  "language" text [not null, ref: > languages.language, default: 'EN']
-  "darktheme" boolean [not null, default: false]
-  "avatarVariant" text [not null]
-  "avatarColors" varchar(6)[] [not null]
+  "hashed_password" text [unique, null]
+  "google_id" text [unique, null]
+  "google_name" text [null]
+  "role" text [not null, default: 'user', ref: > roles.role]
+  "language" text [not null, default: 'EN', ref: > languages.language]
+  "dark_theme" boolean [not null, default: false]
+  "avatar_variant" text [not null]
+  "avatar_colors" "varchar(6)[]" [not null]
 }
 
 Table "recipes" {
-  "uuid" uuid [pk]
+  "uuid" uuid [pk, default: `uuid_generate_v4()`]
   "user_uuid" uuid [not null, ref: > users.uuid]
-  "recipe" text [not null]
+  "card_uuid" uuid [not null]
+  "title" text [not null]
+  "index" int [not null]
   "ingredient" text [not null]
   "quantity" numeric [null]
   "unit" text [null]
   "section" text [not null, ref: > sections.section]
   "kCal" numeric [null]
-  "index" numeric [not null]
+  "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
 }
 
 Table "lists" {
-  "uuid" uuid [pk]
+  "uuid" uuid [pk, default: `uuid_generate_v4()`]
+  "user_uuid" uuid [not null, ref: > users.uuid]
+  "card_uuid" uuid [not null]
   "title" text [not null]
-  "checked" boolean [not null]
+  "index" int [not null]
   "ingredient" text [not null]
   "quantity" numeric [null]
   "unit" text [null]
-  "index" numeric [not null]
-}
-
-Table "list_recipe" {
-  "list_title" text 
-  "recipe" text 
-
-  Indexes {
-    (list_title, recipe) [pk]
-  }
+  "section" text [not null, ref: > sections.section]
+  "checked" boolean [not null]
+  "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
 }

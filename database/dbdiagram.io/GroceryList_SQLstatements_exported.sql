@@ -6,70 +6,59 @@ CREATE TABLE "languages" (
   "language" text PRIMARY KEY
 );
 
-CREATE TABLE "units" (
-  "unit" text PRIMARY KEY
-);
-
 CREATE TABLE "sections" (
   "section" text PRIMARY KEY
 );
 
 CREATE TABLE "users" (
-  "uuid" uuid PRIMARY KEY,
+  "uuid" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "email" text UNIQUE,
-  "hashedPassword" text UNIQUE,
-  "googleId" text UNIQUE,
-  "googleName" text,
+  "hashed_password" text UNIQUE,
+  "google_id" text UNIQUE,
+  "google_name" text,
   "role" text NOT NULL DEFAULT 'user',
   "language" text NOT NULL DEFAULT 'EN',
-  "darktheme" boolean NOT NULL DEFAULT false
-  "avatarVariant" text NOT NULL,
-  "avatarColors" varchar(6)[] NOT NULL
+  "dark_theme" boolean NOT NULL DEFAULT false,
+  "avatar_variant" text NOT NULL,
+  "avatar_colors" varchar(6)[] NOT NULL
 );
 
 CREATE TABLE "recipes" (
-  "uuid" uuid PRIMARY KEY,
+  "uuid" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "user_uuid" uuid NOT NULL,
-  "recipe" text NOT NULL,
+  "card_uuid" uuid NOT NULL,
+  "title" text NOT NULL,
+  "index" int NOT NULL,
   "ingredient" text NOT NULL,
   "quantity" numeric,
   "unit" text,
   "section" text NOT NULL,
   "kCal" numeric,
-  "index" numeric NOT NULL
+  "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc'))
 );
 
 CREATE TABLE "lists" (
-  "uuid" uuid PRIMARY KEY,
+  "uuid" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "user_uuid" uuid NOT NULL,
+  "card_uuid" uuid NOT NULL,
   "title" text NOT NULL,
-  "checked" boolean NOT NULL,
+  "index" int NOT NULL,
   "ingredient" text NOT NULL,
   "quantity" numeric,
   "unit" text,
-  "index" numeric NOT NULL
-);
-
-CREATE TABLE "list_recipe" (
-  "list_title" text,
-  "recipe" text,
-  PRIMARY KEY ("list_title", "recipe")
+  "section" text NOT NULL,
+  "checked" boolean NOT NULL,
+  "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc'))
 );
 
 ALTER TABLE "users" ADD FOREIGN KEY ("role") REFERENCES "roles" ("role");
 
 ALTER TABLE "users" ADD FOREIGN KEY ("language") REFERENCES "languages" ("language");
 
-CREATE TABLE "users_avatars" (
-  "users_uuid" uuid,
-  "avatars_user_uuid" uuid,
-  PRIMARY KEY ("users_uuid", "avatars_user_uuid")
-);
-
-ALTER TABLE "users_avatars" ADD FOREIGN KEY ("users_uuid") REFERENCES "users" ("uuid");
-
-ALTER TABLE "users_avatars" ADD FOREIGN KEY ("avatars_user_uuid") REFERENCES "avatars" ("user_uuid");
-
-
 ALTER TABLE "recipes" ADD FOREIGN KEY ("user_uuid") REFERENCES "users" ("uuid");
 
 ALTER TABLE "recipes" ADD FOREIGN KEY ("section") REFERENCES "sections" ("section");
+
+ALTER TABLE "lists" ADD FOREIGN KEY ("user_uuid") REFERENCES "users" ("uuid");
+
+ALTER TABLE "lists" ADD FOREIGN KEY ("section") REFERENCES "sections" ("section");

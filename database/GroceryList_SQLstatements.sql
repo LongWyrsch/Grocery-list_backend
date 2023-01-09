@@ -11,9 +11,9 @@ CREATE TABLE languages (
 );
 
 INSERT INTO languages (language) VALUES 
-('DE');
+('DE'),
 ('EN'),
-('FR')
+('FR');
 
 -- CREATE TABLE units (
 --   unit text PRIMARY KEY
@@ -37,7 +37,7 @@ INSERT INTO sections (section) VALUES
 ('veggies'),
 ('bread'),
 ('dairies'),
-('meet'),
+('meat'),
 ('seasonings'),
 ('grains'),
 ('other');
@@ -45,145 +45,156 @@ INSERT INTO sections (section) VALUES
 CREATE TABLE users (
   uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   email text UNIQUE NULL,
-  hashedPassword text UNIQUE NULL,
+  hashed_password text UNIQUE NULL,
+  google_id text UNIQUE NULL,
+  google_name text NULL,
   role text NOT NULL DEFAULT 'user' REFERENCES roles(role),
-  language text NOT NULL REFERENCES languages(language) DEFAULT 'EN',
-  darktheme boolean NOT NULL DEFAULT false,
-  googleId text UNIQUE NULL,
-  googleName text NULL
-  avatarVariant text NOT NULL,
-  avatarColors varchar(6)[] NOT NULL
+  language text NOT NULL DEFAULT 'EN' REFERENCES languages(language),
+  dark_theme boolean NOT NULL DEFAULT false,
+  avatar_variant text NOT NULL,
+  avatar_colors varchar(7)[5] NOT NULL
 );
 
-INSERT INTO users (email, hashedPassword, role, language, darktheme) VALUES
-('long.nqw@gmail.com', '$2a$10$doYnT6kWg419.vCB7EO2K.6mLpP1Xyg2JmoLSohOLyJ5WlvPPz9t.', 'admin', 'EN', true);
+INSERT INTO users (email, hashed_password, role, language, dark_theme, avatar_variant, avatar_colors) VALUES
+('long.nqw@gmail.com', '$2a$10$HBuJAleF8IVQUUjvsnnmnucnyFrkdvYqM82FEuvfPI.zMXpoPih7O', 'admin', 'EN', true, 'beam', ARRAY ['#92A1C6','#146A7C','#F0AB3D','#C271B4','#C20D90']);
 
 CREATE TABLE recipes (
   uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_uuid uuid NOT NULL REFERENCES users(uuid),
-  recipe text NOT NULL,
+  card_uuid uuid NOT NULL,
+  title text NOT NULL,
+  index int NOT NULL,
   ingredient text NOT NULL,
   quantity numeric NULL,
-  unit text NULL REFERENCES units(unit),
+  unit text NULL,
   section text NOT NULL REFERENCES sections(section),
-  kCal numeric,
-  index int2 NOT NULL
+  kCal numeric NULL,
+  last_modified timestamp with time zone NOT NULL DEFAULT (now() at time zone 'utc')
 );
 
 CREATE TABLE lists (
   uuid uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_uuid uuid NOT NULL REFERENCES users(uuid),
+  card_uuid uuid NOT NULL,
   title text NOT NULL,
-  checked boolean NOT NULL,
+  index int NOT NULL,
   ingredient text NOT NULL,
   quantity numeric NULL,
-  unit text NULL REFERENCES units(unit),
-  user_uuid uuid NOT NULL REFERENCES users(uuid),
+  unit text NULL,
   section text NOT NULL REFERENCES sections(section),
-  index int2 NOT NULL,
-  last_modified timestamptz NOT NULL DEFAULT (now() at time zone 'utc')
+  checked boolean NOT NULL,
+  recipes text[] NOT NULL,
+  last_modified timestamp with time zone NOT NULL DEFAULT (now() at time zone 'utc')
 );
 
-CREATE TABLE lists_recipes (
-  list_title text NOT NULL,
-  recipe text NOT NULL,
-  PRIMARY KEY (list_title, recipe)
-);
+-- CREATE TABLE lists_recipes (
+--   list_card_uuid text NOT NULL lists(card_uuid),
+--   recipe_card_uuid text NOT NULL recipes(card_uuid),
+--   PRIMARY KEY (list_title, recipe)
+-- );
 
 -- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 -- INSERT BELOW VALUES AFTER CREATING ADMIN USER AND RETRIEVING ITS UUID
 -- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
 
-INSERT INTO recipes (user_uuid, recipe, ingredient, quantity, unit, section, kCal, index) VALUES
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'onions', 1, null, 'veggies', 44.0, 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'zuccinis', 1, null, 'veggies', 54.0, 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'garlic cloves', 2, null, 'veggies', 0.0, 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'cooking oil', 60, 'ml', 'seasonings', 503.9, 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'ground beef', 400, 'g', 'meat', 1328.0, 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'tomato paste', 156, 'ml', 'seasonings', 161.2, 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'chili powder', 0.25, 'tsp', 'seasonings', 1.9, 7),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'nutmeg', 0.25, 'tsp', 'seasonings', 3.0, 8),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'cream', 60, 'ml', 'dairies', 181.6, 9),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'parmesan cheese', 125, 'ml', 'dairies', 274.8, 10),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'salt', null, 'to taste', 'seasonings', 0.0, 11),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'pepper', null, 'to taste', 'seasonings', 0.0, 12),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Chili Bolognese', 'spaghetti', 375, 'g', 'grains', 1335.0, 13),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Lasagna', 'ground beef', 400, 'g', 'meat', 1328.0, 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Lasagna', 'cream', 200,	'ml', 'dairies', 605.2, 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Lasagna', 'lasagna seasonning', 2, 'bags', 'seasonings', 268.3, 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Lasagna', 'lasagna', 200, 'g', 'grains', 718.0, 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Lasagna', 'grated emmental cheese', 100, 'g', 'dairies', 368.0, 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Lasagna', 'canned diced tomato', 800, 'g', 'grains', 192.0, 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'rice noodles', 250, 'g', 'grains', 920.0, 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'tamarind puree', 3, 'tbsp', 'seasonings', 113.5, 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'brown sugar', 6, 'tbsp', 'seasonings', 330.3, 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'fish sauce', 4, 'tbsp', 'seasonings', 31.1, 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'oyster sauce', 3, 'tbsp', 'seasonings', 254.6, 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'cooking oil', 2, 'tbsp', 'seasonings', 248.6, 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'onion', 2, null, 'veggies', 88.0, 7),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'garlic cloves', 4, null, 'veggies', 0.0, 8),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'chicken', 400, 'g', 'meat', 660.0, 9),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'eggs', 4, null, 'dairies', 312.0, 10),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'beansprouts', 1000, 'ml', 'veggies', 82.8, 11),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'tofu (firm)', 500, 'g', 'dairies', 500.0, 12),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'green onions', 6, null, 'veggies', 30.0, 13),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'chopped peanuts', 100, 'g', 'other', 567.0, 14),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'lime', 1, null, 'veggies', 0.0, 15),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Pad thai', 'chili powder', null, 'to taste', 'seasonings', 0.0, 16),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Spaghetti Carbonara', 'bacon', 2, 'slices', 'meat', 10.8, 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Spaghetti Carbonara', 'green onions', 1, null, 'veggies', 5.0, 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Spaghetti Carbonara', 'eggs', 2, null, 'dairies', 156.0, 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Spaghetti Carbonara', 'cream', 125, 'ml', 'dairies', 378.3, 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Spaghetti Carbonara', 'parmesan cheese', 50, 'g', 'dairies', 215.5, 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Spaghetti Carbonara', 'spaghetti', 375, 'g', 'grains', 1335.0, 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'flat green beans', 100, 'g', 'veggies', 31.0, 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'cooking oil', 1, 'tbsp', 'seasonings', 124.3, 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'garlic cloves', 1, null, 'veggies', 0.0, 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'green curry paste', 1, 'tbsp', 'seasonings', 28.0, 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'coconut milk', 400, 'ml', 'seasonings', 852.7, 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'fish sauce', 2, 'tsp', 'seasonings', 5.1, 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'brown sugar', 1, 'tsp', 'seasonings', 18.2, 7),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'chicken', 500, 'g', 'meat', 825.0, 8),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'basil', null, 'to taste', 'veggies', 0.0, 9),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'rice', 6, 'servings', 'grains', 1734.0, 10),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai Green Curry', 'cherry tomatoes', 12, null, 'veggies', 2.2, 11);
+INSERT INTO recipes (user_uuid, card_uuid, title, index, ingredient, quantity, unit, section, kCal, last_modified) VALUES
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 1, 'onions', 1, null, 'veggies', 44.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 2, 'zuccinis', 1, null, 'veggies', 54.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 3, 'garlic cloves', 2, null, 'veggies', 0.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 4, 'cooking oil', 60, 'ml', 'seasonings', 503.9, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 5, 'ground beef', 400, 'g', 'meat', 1328.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 6, 'tomato paste', 156, 'ml', 'seasonings', 161.2, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 7, 'chili powder', 0.25, 'tsp', 'seasonings', 1.9, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 8, 'nutmeg', 0.25, 'tsp', 'seasonings', 3.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 9, 'cream', 60, 'ml', 'dairies', 181.6, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 10, 'parmesan cheese', 125, 'ml', 'dairies', 274.8, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 11, 'salt', null, 'to taste', 'seasonings', 0.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 12, 'pepper', null, 'to taste', 'seasonings', 0.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '9d9995e2-ac8a-4f5a-8485-801d17143e4f', 'Chili Bolognese', 13, 'spaghetti', 375, 'g', 'grains', 1335.0, '2022-12-30 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'Lasagna', 1, 'ground beef', 400, 'g', 'meat', 1328.0, '2022-12-29 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'Lasagna', 2, 'cream', 200,	'ml', 'dairies', 605.2, '2022-12-29 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'Lasagna', 3, 'lasagna seasonning', 2, 'bags', 'seasonings', 268.3, '2022-12-29 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'Lasagna', 4, 'lasagna', 200, 'g', 'grains', 718.0, '2022-12-29 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'Lasagna', 5, 'grated emmental cheese', 100, 'g', 'dairies', 368.0, '2022-12-29 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'Lasagna', 6, 'canned diced tomato', 800, 'g', 'grains', 192.0, '2022-12-29 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 1, 'rice noodles', 250, 'g', 'grains', 920.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 2, 'tamarind puree', 3, 'tbsp', 'seasonings', 113.5, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 3, 'brown sugar', 6, 'tbsp', 'seasonings', 330.3, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 4, 'fish sauce', 4, 'tbsp', 'seasonings', 31.1, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 5, 'oyster sauce', 3, 'tbsp', 'seasonings', 254.6, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 6, 'cooking oil', 2, 'tbsp', 'seasonings', 248.6, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 7, 'onion', 2, null, 'veggies', 88.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 8, 'garlic cloves', 4, null, 'veggies', 0.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 9, 'chicken', 400, 'g', 'meat', 660.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 10, 'eggs', 4, null, 'dairies', 312.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 11, 'beansprouts', 1000, 'ml', 'veggies', 82.8, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 12, 'tofu (firm)', 500, 'g', 'dairies', 500.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 13, 'green onions', 6, null, 'veggies', 30.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 14, 'chopped peanuts', 100, 'g', 'other', 567.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 15, 'lime', 1, null, 'veggies', 0.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '67ae76c8-e973-43d3-8981-c99ba6400a27', 'Pad thai', 16, 'chili powder', null, 'to taste', 'seasonings', 0.0, '2022-12-28 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'a6bf5db6-b76b-43af-a963-fab17017d731', 'Spaghetti Carbonara', 1, 'bacon', 2, 'slices', 'meat', 10.8, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'a6bf5db6-b76b-43af-a963-fab17017d731', 'Spaghetti Carbonara', 2, 'green onions', 1, null, 'veggies', 5.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'a6bf5db6-b76b-43af-a963-fab17017d731', 'Spaghetti Carbonara', 3, 'eggs', 2, null, 'dairies', 156.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'a6bf5db6-b76b-43af-a963-fab17017d731', 'Spaghetti Carbonara', 4, 'cream', 125, 'ml', 'dairies', 378.3, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'a6bf5db6-b76b-43af-a963-fab17017d731', 'Spaghetti Carbonara', 5, 'parmesan cheese', 50, 'g', 'dairies', 215.5, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'a6bf5db6-b76b-43af-a963-fab17017d731', 'Spaghetti Carbonara', 6, 'spaghetti', 375, 'g', 'grains', 1335.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 1, 'flat green beans', 100, 'g', 'veggies', 31.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 2, 'cooking oil', 1, 'tbsp', 'seasonings', 124.3, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 3, 'garlic cloves', 1, null, 'veggies', 0.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 4, 'green curry paste', 1, 'tbsp', 'seasonings', 28.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 5, 'coconut milk', 400, 'ml', 'seasonings', 852.7, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 6, 'fish sauce', 2, 'tsp', 'seasonings', 5.1, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 7, 'brown sugar', 1, 'tsp', 'seasonings', 18.2, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 8, 'chicken', 500, 'g', 'meat', 825.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 9, 'basil', null, 'to taste', 'veggies', 0.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 10, 'rice', 6, 'servings', 'grains', 1734.0, '2022-12-27 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', '7df29237-e60f-4a29-9834-e0d196fa98e3', 'Thai Green Curry', 11, 'cherry tomatoes', 12, null, 'veggies', 2.2, '2022-12-27 00:01:00+02'::timestamptz);
 
-INSERT INTO lists (user_uuid, title, checked, ingredient, quantity, unit, section, index) VALUES
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'garlic cloves', 2, null, 'veggies', 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'onion', 1, null, 'veggies', 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'zuccini', 1, null, 'veggies', 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'cream', 260, 'ml', 'dairies', 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'grated emmental cheese', 100, 'g', 'dairies', 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'parmesan cheese', 125, 'g', 'dairies', 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'ground beef', 800, 'g', 'meat', 7),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'chili powder', 0.25, 'tsp', 'seasonings', 8),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'cooking oil', 60, 'ml', 'seasonings', 9),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'lasagna seasonning', 2, 'bags', 'seasonings', 10),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'muskatnuss	0', 0.25, 'tsp' , 'seasonings', 11),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'pepper', null, 'to taste', 'seasonings', 12),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'salt', null, 'to taste', 'seasonings', 13),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'tomato paste', 156, 'ml', 'seasonings', 14),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'canned diced tomato', 800, 'g', 'grains', 15),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'lasagna', 200, 'g', 'grains', 16),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Italian', false, 'spaghetti', 375, 'g', 'grains', 17),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'basil', null, 'to taste', 'veggies', 1),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'beansprouts', 1000, 'ml', 'veggies', 2),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'cherry tomatoes', 12, null, 'veggies', 3),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'flat green beans', 100, 'g', 'veggies', 4),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'garlic cloves', 5, null, 'veggies', 5),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'green onions', 6, null, 'veggies', 6),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'lime', 1, null, 'veggies', 7),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'onion', 2, null, 'veggies', 8),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'eggs', 4, null, 'dairies', 9),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'tofu (firm)',	 00, 'g', 'dairies', 10),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'chicken', 900, 'g', 'meat', 11),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'brown sugar', 7, 'tbsp', 'seasonings', 12),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'chili powder', null, 'to taste', 'seasonings', 13),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'coconut milk', 400, 'ml', 'seasonings', 14),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'cooking oil', 3, 'tbsp', 'seasonings', 15),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'fish sauce', 6, 'tsp', 'seasonings', 16),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'green curry paste', 1, 'tbsp', 'seasonings', 17),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'oyster sauce', 3, 'tbsp', 'seasonings', 18),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'tamarind puree', 3, 'tbsp', 'seasonings', 19),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'rice', 6, 'servings', 'grains', 20),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'rice noodles', 250, 'g', 'grains', 21),
-('f7490a89-0bab-495e-93c3-6ab02c4e9b2a', 'Thai', false, 'chopped peanuts', 100, 'g', 'other', 22);
+INSERT INTO lists (user_uuid, card_uuid, title, index, ingredient, quantity, unit, section, checked, recipes, last_modified) VALUES
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 1, 'garlic cloves', 2, null, 'veggies', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 2, 'onion', 1, null, 'veggies', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 3, 'zuccini', 1, null, 'veggies', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 4, 'cream', 260, 'ml', 'dairies', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 5, 'grated emmental cheese', 100, 'g', 'dairies', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 6, 'parmesan cheese', 125, 'g', 'dairies', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 7, 'ground beef', 800, 'g', 'meat', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 8, 'chili powder', 0.25, 'tsp', 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 9, 'cooking oil', 60, 'ml', 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 10, 'lasagna seasonning', 2, 'bags', 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 11, 'muskatnuss	0', 0.25, 'tsp' , 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 12, 'pepper', null, 'to taste', 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 13, 'salt', null, 'to taste', 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 14, 'tomato paste', 156, 'ml', 'seasonings', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 15, 'canned diced tomato', 800, 'g', 'grains', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 16, 'lasagna', 200, 'g', 'grains', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'f60b5f34-5451-44d9-869c-2c42149b8139', 'Italian', 17, 'spaghetti', 375, 'g', 'grains', false, ARRAY ['Chili Bolognese', 'Lasagna', 'Spaghetti Carbonara'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 1, 'basil', null, 'to taste', 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 2, 'beansprouts', 1000, 'ml', 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 3, 'cherry tomatoes', 12, null, 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 4, 'flat green beans', 100, 'g', 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 5, 'garlic cloves', 5, null, 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 6, 'green onions', 6, null, 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-05 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 7, 'lime', 1, null, 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 8, 'onion', 2, null, 'veggies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 9, 'eggs', 4, null, 'dairies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 10, 'tofu (firm)',	 00, 'g', 'dairies', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 11, 'chicken', 900, 'g', 'meat', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 12, 'brown sugar', 7, 'tbsp', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 13, 'chili powder', null, 'to taste', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 14, 'coconut milk', 400, 'ml', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 15, 'cooking oil', 3, 'tbsp', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 16, 'fish sauce', 6, 'tsp', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 17, 'green curry paste', 1, 'tbsp', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 18, 'oyster sauce', 3, 'tbsp', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 19, 'tamarind puree', 3, 'tbsp', 'seasonings', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 20, 'rice', 6, 'servings', 'grains', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 21, 'rice noodles', 250, 'g', 'grains', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz),
+('5e08e3ee-b46e-46e4-a672-b364ed62c6a9', 'aa90030a-355b-4b33-a9b0-c5673b524f90', 'Thai', 22, 'chopped peanuts', 100, 'g', 'other', false, ARRAY ['Pad Thai', 'Thai Green Curry'], '2023-01-04 00:01:00+02'::timestamptz);
+
+-- INSERT INTO lists_recipes (list_card_uuid, recipe_card_uuid) VALUES
+-- ('f60b5f34-5451-44d9-869c-2c42149b8139','9d9995e2-ac8a-4f5a-8485-801d17143e4f')
+-- ('f60b5f34-5451-44d9-869c-2c42149b8139','6aa80830-8ecc-49b7-958c-9aa6a7b89658')
+-- ('f60b5f34-5451-44d9-869c-2c42149b8139','a6bf5db6-b76b-43af-a963-fab17017d731')
+-- ('aa90030a-355b-4b33-a9b0-c5673b524f90','67ae76c8-e973-43d3-8981-c99ba6400a27')
+-- ('aa90030a-355b-4b33-a9b0-c5673b524f90','7df29237-e60f-4a29-9834-e0d196fa98e3')
