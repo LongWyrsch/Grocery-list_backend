@@ -34,7 +34,8 @@ CREATE TABLE "recipes" (
   "unit" text,
   "section" text NOT NULL,
   "kCal" numeric,
-  "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc'))
+  "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc')),
+  "grid_position" json
 );
 
 CREATE TABLE "lists" (
@@ -48,7 +49,8 @@ CREATE TABLE "lists" (
   "unit" text,
   "section" text NOT NULL,
   "checked" boolean NOT NULL,
-  "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc'))
+  "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc')),
+  "grid_position" json
 );
 
 ALTER TABLE "users" ADD FOREIGN KEY ("role") REFERENCES "roles" ("role");

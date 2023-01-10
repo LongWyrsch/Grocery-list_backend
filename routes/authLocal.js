@@ -1,22 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
+const passport = require('passport');
+const supabase = require('../supabase');
 const bcrypt = require('bcrypt');
 
-const passport = require('passport');
-
-const supabase = require('../supabase');
-
 const randomColorArray = require('../utils/randomColorsArray');
-
 const { signupValidation, signinValidation } = require('../utils/validator');
-
-// I temp commented this section. I moved the cors option middleware the app.js so I don't have to add it in every .js routes.
-// var cors = require('cors');
-// var corsOptions = {
-// 	origin: 'http://localhost:3001',
-// 	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-// };
 
 // I was confused by the (req,res,next) appended at the end of passport.authenticate(...).
 // passport.authenticate(...) is a function returning a middleware. Like all middleware, you must pass it req,res and next.
@@ -75,12 +64,12 @@ router.post('/signup', async (req, res) => {
 		let hashedPassword = await bcrypt.hash(password, 10);
 		let newUser = {
 			email: email,
-			hashedpassword: hashedPassword,
+			hashed_password: hashedPassword,
 			role: 'user',
 			language: language,
-			darktheme: darktheme,
-			avatarVariant: 'beam',
-			avatarColors: randomColorArray(),
+			darkt_heme: darktheme,
+			avatar_variant: 'beam',
+			avatar_colors: randomColorArray(),
 		};
 		const insertUser = await supabase.from('users').insert([newUser]);
 
@@ -92,15 +81,6 @@ router.post('/signup', async (req, res) => {
 		}
 
 		res.status(201).send();
-		// res.status(201).json({
-		// 	msg: 'New user created!',
-		// 	user: {
-		// 		email: newUser.email,
-		// 		language: newUser.language,
-		// 		darktheme: newUser.darktheme,
-		// 		googleName: '',
-		// 	}
-		// });
 	}
 });
 

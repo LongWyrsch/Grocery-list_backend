@@ -18,7 +18,15 @@ module.exports = function (passport) {
       return done(new Error('Error when deserializing: could not find user with provided Google id.'))
     }
     
-    let user = data[0]
+    let user = {
+      uuid: data[0].uuid,
+      email: data[0].email,
+      language: data[0].language,
+      darktheme: data[0].dark_theme,
+      googleName: data[0].google_name,
+      avatarVariant: data[0].avatar_variant,
+      avatarColors: data[0].avatar_colors
+    }
     done(null, user);
   });
 };

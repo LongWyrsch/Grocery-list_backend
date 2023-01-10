@@ -13,7 +13,7 @@ module.exports = function (passport) {
 			async function (accessToken, refreshToken, profile, cb) {
 				// User.findOrCreate({ googleId: profile.id }, function (err, user) {
 				let user = {};
-				let { data, error } = await supabase.from('users').select('*').eq('googleId', profile.id);
+				let { data, error } = await supabase.from('users').select('*').eq('google_id', profile.id);
 
 				if (error) {
 					// Error('Supabase failed to retrieving a user with matching Google id.')
@@ -39,11 +39,11 @@ module.exports = function (passport) {
 					let newUser = {
 						role: 'user',
 						language: language,
-						darktheme: false,
-						googleId: profile.id,
-						googleName: profile.displayName,
-						avatarVariant: 'beam',
-						avatarColors: randomColorsArray(),
+						darkt_heme: false,
+						google_id: profile.id,
+						google_name: profile.displayName,
+						avatar_variant: 'beam',
+						avatar_colors: randomColorsArray(),
 					};
 					const insertUser = await supabase.from('users').insert([newUser]);
 
@@ -57,11 +57,11 @@ module.exports = function (passport) {
 					user = {
 						role: data[0].role,
 						language: data[0].language,
-						darktheme: data[0].darktheme,
-						googleId: data[0].googleId,
-						googleName: data[0].googleName,
-						avatarVariant: data[0].avatarVariant,
-						avatarColors: data[0].avatarColors,
+						darktheme: data[0].dark_theme,
+						googleId: data[0].google_id,
+						googleName: data[0].google_name,
+						avatarVariant: data[0].avatar_variant,
+						avatarColors: data[0].avatar_colors,
 					};
 				}
 				return cb(null, user);

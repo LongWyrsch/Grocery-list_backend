@@ -35,6 +35,7 @@ Table "recipes" {
   "section" text [not null, ref: > sections.section]
   "kCal" numeric [null]
   "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
+  "grid_position" json [NULL]
 }
 
 Table "lists" {
@@ -49,4 +50,5 @@ Table "lists" {
   "section" text [not null, ref: > sections.section]
   "checked" boolean [not null]
   "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
+  "grid_position" json [NULL]
 }

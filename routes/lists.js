@@ -7,15 +7,6 @@ const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passp
 const organizeIngredients = require('../utils/organizeIngredients') 
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
-	// Tuerned out not to be necessary thanks to util function organizeIngredients()
-			// const distinctLists = await supabase.rpc('select_distinct', { querycolumn: 'list', useruuid: req.user.uuid });
-			// if (distinctLists.error) {
-			// 	errorMessage = 'Database select operation failed';
-			// 	console.error(errorMessage);
-			// 	console.log(distinctLists.error);
-			// 	res.status(502).send(errorMessage);
-			// 	return;
-			// }
 
 	let allLists = await supabase.from('lists').select('*').eq('user_uuid', req.user.uuid);
 	if (allLists.error) {
@@ -27,12 +18,12 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 	}
 
 	if (allLists.data.length === 0) {
-		res.status(204).JSON.stringify([]);
+		res.status(204).send([]);
 		return;
 	}
 	
 	let organizedIngredientsArray = organizeIngredients('lists', allLists.data)
-	res.status(200).send(JSON.stringify(organizedIngredientsArray))
+	res.status(200).send(organizedIngredientsArray)
 	
 });
 

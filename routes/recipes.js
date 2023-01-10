@@ -4,17 +4,9 @@ const router = express.Router();
 const supabase = require('../supabase');
 
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
+const organizeIngredients = require('../utils/organizeIngredients') 
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
-	const distinctRecipes = await supabase.rpc('select_distinct', { querycolumn: 'recipe', useruuid: req.user.uuid });
-	if (distinctRecipes.error) {
-		errorMessage = 'Database select operation failed';
-		console.error(errorMessage);
-		console.log(distinctRecipes.error);
-		res.status(502).send(errorMessage);
-		return;
-	}
-
 	let allRecipes = await supabase.from('recipes').select('*').eq('user_uuid', req.user.uuid);
 	if (allRecipes.error) {
 		errorMessage = 'Database select operation failed';
@@ -29,10 +21,8 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 		return;
 	}
 
-	res.status(200).json({
-		distinctRecipes: distinctRecipes.data,
-		allRecipeIngredients: allRecipes.data,
-	});
+	let organizedIngredientsArray = organizeIngredients('recipes', allRecipes.data)
+	res.status(200).send(organizedIngredientsArray)
 });
 
 router.post('/', checkAuthenticated, async (req, res, next) => {
