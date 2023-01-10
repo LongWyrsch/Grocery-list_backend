@@ -1,468 +1,468 @@
 openapi: 3.0.3
 info:
-  title: Grocery list backend - OpenAPI 3.0
-  description: |-
-    This is a Grocery list backend server based on the OpenAPI 3.0 specification.
-    Some useful links:
-    - [Grocery list backend repository](https://github.com/LongWyrsch/Grocery-list_backend)
+    title: Grocery list backend - OpenAPI 3.0
+    description: |-
+        This is a Grocery list backend server based on the OpenAPI 3.0 specification.
+        Some useful links:
+        - [Grocery list backend repository](https://github.com/LongWyrsch/Grocery-list_backend)
 
-  termsOfService: http://localhost:3001/tos
-  contact:
-    email: long.nqw@gmail.com
-  version: 1.0.0
+    termsOfService: http://localhost:3001/tos
+    contact:
+        email: long.nqw@gmail.com
+    version: 1.0.0
 servers:
-  - url: http://localhost:3000
+    - url: http://localhost:3000
 tags:
-  - name: auth
-    description: Creating and accessing accounts
-  - name: recipes
-    description: Access to recipes
-  - name: lists
-    description: Acces to lists
-  - name: users
-    description: Access user details
+    - name: auth
+      description: Creating and accessing accounts
+    - name: recipes
+      description: Access to recipes
+    - name: lists
+      description: Acces to lists
+    - name: users
+      description: Access user details
 paths:
-  /auth/google:
-    get:
-      tags:
-        - auth
-      summary: 'Step 1 in Google OAuth 2.0 authentication'
-      description: 'Redirect user to Google OAuth 2.0 page'
-      operationId: googleAuthPt1
-      responses:
-        '302':
-          description: 'Redirected to Google OAuth 2.0'
-  /auth/google/callback:
-    get:
-      tags:
-        - auth
-      summary: 'Step 2 in Google OAuth 2.0 authentication'
-      description: Google redirects user to app
-      operationId: googleAuthPt2
-      responses:
-        '200':
-          description: 'User successfully authenticated'
-  /auth/local/login:
-    post:
-      tags:
-        - auth
-      summary: Local login
-      description: Login with email and password
-      operationId: localLogin
-      requestBody:
-        description: User email and password
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: 'example@domain.com'
-                password:
-                  type: string
-                  format: password
-                  example: 123password
-        required: true
-      responses:
-        '200':
-          description: 'User successfully authenticated'
-        '400':
-          description: 'Wrong credentials provided'
-  /auth/local/register:
-    post:
-      tags:
-        - auth
-      summary: Local register
-      description: Register with email and password
-      operationId: localRegister
-      requestBody:
-        description: User email and password
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: 'example@domain.com'
-                password:
-                  type: string
-                  format: password
-                  example: 123password
-                language:
-                  type: string
-                  example: 'EN'
-                darkmode:
-                  type: boolean
-                  example: false
-        required: true
-      responses:
-        '201':
-          description: 'User successfully authenticated'
-        '400':
-          description: 'User with that email already exists.'
-        '500':
-          description: 'Supabase returned more than 1 user matching a given email.'
-        '502':
-          description: 'Database return an error'
-  /users:
-    get:
-      tags:
-        - users
-      summary: Get user
-      description: Get user
-      operationId: getUser
-      responses:
-        '200':
-          description: User fetched successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-        '502':
-          description: 'Database select operation failed'
-    put:
-      tags:
-        - users
-      summary: Update user
-      description: Update user
-      operationId: updateUser
-      requestBody:
-        $ref: '#/components/requestBodies/User'
-      responses:
-        '200':
-          description: User successfully updated
-        '502':
-          description: 'Database update operation failed'
-    delete:
-      tags:
-        - users
-      summary: Delete user
-      description: Delete user
-      operationId: deleteUser
-      responses:
-        '200':
-          description: User successfully deleted
-        '502':
-          description: 'Database delete operation failed'
-  /recipes:
-    get:
-      tags:
-        - recipes
-      summary: Get all recipes
-      description: Get all recipes
-      operationId: allRecipies
-      responses:
-        '200':
-          description: Recipes fetched successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  distinctRecipes:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        distinctvalues:
+    /auth/google:
+        get:
+            tags:
+                - auth
+            summary: 'Step 1 in Google OAuth 2.0 authentication'
+            description: 'Redirect user to Google OAuth 2.0 page'
+            operationId: googleAuthPt1
+            responses:
+                '302':
+                    description: 'Redirected to Google OAuth 2.0'
+    /auth/google/callback:
+        get:
+            tags:
+                - auth
+            summary: 'Step 2 in Google OAuth 2.0 authentication'
+            description: Google redirects user to app
+            operationId: googleAuthPt2
+            responses:
+                '200':
+                    description: 'User successfully authenticated'
+    /auth/local/login:
+        post:
+            tags:
+                - auth
+            summary: Local login
+            description: Login with email and password
+            operationId: localLogin
+            requestBody:
+                description: User email and password
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                    example: 'example@domain.com'
+                                password:
+                                    type: string
+                                    format: password
+                                    example: 123password
+                required: true
+            responses:
+                '200':
+                    description: 'User successfully authenticated'
+                '400':
+                    description: 'Wrong credentials provided'
+    /auth/local/register:
+        post:
+            tags:
+                - auth
+            summary: Local register
+            description: Register with email and password
+            operationId: localRegister
+            requestBody:
+                description: User email and password
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                    example: 'example@domain.com'
+                                password:
+                                    type: string
+                                    format: password
+                                    example: 123password
+                                language:
+                                    type: string
+                                    example: 'EN'
+                                darkmode:
+                                    type: boolean
+                                    example: false
+                required: true
+            responses:
+                '201':
+                    description: 'User successfully authenticated'
+                '400':
+                    description: 'User with that email already exists.'
+                '500':
+                    description: 'Supabase returned more than 1 user matching a given email.'
+                '502':
+                    description: 'Database return an error'
+    /users:
+        get:
+            tags:
+                - users
+            summary: Get user
+            description: Get user
+            operationId: getUser
+            responses:
+                '200':
+                    description: User fetched successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '502':
+                    description: 'Database select operation failed'
+        put:
+            tags:
+                - users
+            summary: Update user
+            description: Update user
+            operationId: updateUser
+            requestBody:
+                $ref: '#/components/requestBodies/User'
+            responses:
+                '200':
+                    description: User successfully updated
+                '502':
+                    description: 'Database update operation failed'
+        delete:
+            tags:
+                - users
+            summary: Delete user
+            description: Delete user
+            operationId: deleteUser
+            responses:
+                '200':
+                    description: User successfully deleted
+                '502':
+                    description: 'Database delete operation failed'
+    /recipes:
+        get:
+            tags:
+                - recipes
+            summary: Get all recipes
+            description: Get all recipes
+            operationId: allRecipies
+            responses:
+                '200':
+                    description: Recipes fetched successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    distinctRecipes:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                distinctvalues:
+                                                    type: string
+                                                    example: 'Thai Green Curry'
+                                    allRecipeIngredients:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/RecipeIngredient'
+                '204':
+                    description: 'User has no recipes'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                                example: []
+                '502':
+                    description: 'Database select operation failed'
+        post:
+            tags:
+                - recipes
+            summary: Create new recipe
+            description: Create new recipe
+            operationId: createRecipe
+            requestBody:
+                $ref: '#/components/requestBodies/Recipe'
+            responses:
+                '201':
+                    description: Recipe successfully created
+                '502':
+                    description: 'Database insert operation failed'
+        put:
+            tags:
+                - recipes
+            summary: Update recipe ingredient
+            description: Update recipe ingredient
+            operationId: updateRecipeIngredient
+            requestBody:
+                $ref: '#/components/requestBodies/Recipe'
+            responses:
+                '200':
+                    description: Recipe ingredient successfully updated
+                '502':
+                    description: 'Database update operation failed'
+        delete:
+            tags:
+                - recipes
+            summary: Delete recipe or recipe ingredient
+            description: Delete recipe or recipe ingredient
+            operationId: deleteRecipeIngredient
+            parameters:
+                - name: uuid
+                  in: query
+                  description: Recipe ingredient uuid to delete
+                  required: false
+                  schema:
+                      type: array
+                      items:
                           type: string
-                          example: 'Thai Green Curry'
-                  allRecipeIngredients:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/RecipeIngredient'
-        '204':
-          description: 'User has no recipes'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                example: []
-        '502':
-          description: 'Database select operation failed'
-    post:
-      tags:
-        - recipes
-      summary: Create new recipe
-      description: Create new recipe
-      operationId: createRecipe
-      requestBody:
-        $ref: '#/components/requestBodies/Recipe'
-      responses:
-        '201':
-          description: Recipe successfully created
-        '502':
-          description: 'Database insert operation failed'
-    put:
-      tags:
-        - recipes
-      summary: Update recipe ingredient
-      description: Update recipe ingredient
-      operationId: updateRecipeIngredient
-      requestBody:
-         $ref: '#/components/requestBodies/Recipe'
-      responses:
-        '200':
-          description: Recipe ingredient successfully updated
-        '502':
-          description: 'Database update operation failed'
-    delete:
-      tags:
-        - recipes
-      summary: Delete recipe or recipe ingredient
-      description: Delete recipe or recipe ingredient
-      operationId: deleteRecipeIngredient
-      parameters:
-        - name: uuid
-          in: query
-          description: Recipe ingredient uuid to delete
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-              format: uuid
-              example: '123e4567-e89b-12d3-a456-426614174000'
-        - name: recipe
-          in: query
-          description: Recipe name to delete
-          required: false
-          schema:
-            type: string
-            example: 'Lasagna'
-      responses:
-        '200':
-          description: Recipe ingredient successfully deleted
-        '502':
-          description: 'Database delete operation failed'
-  /lists:
-    get:
-      tags:
-        - lists
-      summary: Get all lists
-      description: Get all lists
-      operationId: allLists
-      responses:
-        '200':
-          description: Lists fetched successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  distinctLists:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        distinctvalues:
-                          type: string
-                          example: 'Italian'
-                  allListIngredients:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ListIngredient'
-        '204':
-          description: 'User has no lists'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                example: []
-        '502':
-          description: 'Database select operation failed'
-    post:
-      tags:
-        - lists
-      summary: Create new list
-      description: Create new list
-      operationId: createList
-      requestBody:
-        $ref: '#/components/requestBodies/List'
-      responses:
-        '201':
-          description: List successfully created
-        '502':
-          description: 'Database insert operation failed'
-    put:
-      tags:
-        - lists
-      summary: Update list ingredient
-      description: Update list ingredient
-      operationId: updateListIngredient
-      requestBody:
-        description: Update a list ingredient
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListIngredient'
-        required: true
-      responses:
-        '200':
-          description: List ingredient successfully updated
-        '502':
-          description: 'Database update operation failed'
-    delete:
-      tags:
-        - lists
-      summary: Delete list or list ingredient
-      description: Delete list or list ingredient
-      operationId: deleteListIngredient
-      parameters:
-        - name: uuid
-          in: query
-          description: List ingredient uuid to delete
-          required: false
-          schema:
-            type: string
-            format: uuid
-            example: '123e4567-e89b-12d3-a456-426614174000'
-        - name: list
-          in: query
-          description: List to delete
-          required: false
-          schema:
-            type: string
-            example: 'Italian'
-      responses:
-        '200':
-          description: List ingredient successfully deleted
-        '502':
-          description: 'Database delete operation failed'
+                          format: uuid
+                          example: '123e4567-e89b-12d3-a456-426614174000'
+                - name: recipe
+                  in: query
+                  description: Recipe name to delete
+                  required: false
+                  schema:
+                      type: string
+                      example: 'Lasagna'
+            responses:
+                '200':
+                    description: Recipe ingredient successfully deleted
+                '502':
+                    description: 'Database delete operation failed'
+    /lists:
+        get:
+            tags:
+                - lists
+            summary: Get all lists
+            description: Get all lists
+            operationId: allLists
+            responses:
+                '200':
+                    description: Lists fetched successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    distinctLists:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                distinctvalues:
+                                                    type: string
+                                                    example: 'Italian'
+                                    allListIngredients:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/ListIngredient'
+                '204':
+                    description: 'User has no lists'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                                example: []
+                '502':
+                    description: 'Database select operation failed'
+        post:
+            tags:
+                - lists
+            summary: Create new list
+            description: Create new list
+            operationId: createList
+            requestBody:
+                $ref: '#/components/requestBodies/List'
+            responses:
+                '201':
+                    description: List successfully created
+                '502':
+                    description: 'Database insert operation failed'
+        put:
+            tags:
+                - lists
+            summary: Update list ingredient
+            description: Update list ingredient
+            operationId: updateListIngredient
+            requestBody:
+                description: Update a list ingredient
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ListIngredient'
+                required: true
+            responses:
+                '200':
+                    description: List ingredient successfully updated
+                '502':
+                    description: 'Database update operation failed'
+        delete:
+            tags:
+                - lists
+            summary: Delete list or list ingredient
+            description: Delete list or list ingredient
+            operationId: deleteListIngredient
+            parameters:
+                - name: uuid
+                  in: query
+                  description: List ingredient uuid to delete
+                  required: false
+                  schema:
+                      type: string
+                      format: uuid
+                      example: '123e4567-e89b-12d3-a456-426614174000'
+                - name: list
+                  in: query
+                  description: List to delete
+                  required: false
+                  schema:
+                      type: string
+                      example: 'Italian'
+            responses:
+                '200':
+                    description: List ingredient successfully deleted
+                '502':
+                    description: 'Database delete operation failed'
 components:
-  schemas:
-    User:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-          example: 'example@domain.com'
-        language:
-          type: string
-          example: ENG
-        darkmode:
-          type: boolean
-          example: false
-        googleName:
-          type: string
-          example: John Smith
-        avatarVariant:
-          type: string
-          example: marble
-        avatarColors:
-          type: array
-          items:
-            type: string
-            example: '#92A1C6'
-          minItems: 5
-          maxItems: 5
-    RecipeIngredient:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
-        user_uuid:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
-        recipe:
-          type: string
-          example: Lasagna
-        ingredient:
-          type: string
-          example: tomato sauce
-        quantity:
-          type: number
-          example: 400
-        unit:
-          type: string
-          example: ml
-        section:
-          type: string
-          example: seasonings
-        kCal:
-          type: number
-          example: 0
-        index:
-          type: number
-          example: 1
-    ListIngredient:
-      type: object
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
-        user_uuid:
-          type: string
-          format: uuid
-          example: '123e4567-e89b-12d3-a456-426614174000'
-        title:
-          type: string
-          example: Italian
-        checked:
-          type: boolean
-          example: false
-        ingredient:
-          type: string
-          example: tomato sauce
-        quantity:
-          type: number
-          example: 400
-        unit:
-          type: string
-          example: ml
-        section:
-          type: string
-          example: seasonings
-        index:
-          type: number
-          example: 1
-        last_modified:
-          type: string
-          format: date-time
-          example: '2023-01-01 16:07:18.103861+00'
-  requestBodies:
-    Recipe:
-      description: Recipe ingredients that needs to be added to updated
-      required: true
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/RecipeIngredient'
-    List:
-      description: List ingredients that needs to be added to updated
-      required: true
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ListIngredient'
-    User:
-      description: User properties to update
-      required: true
-      content:
-        application/json:
-          schema:
+    schemas:
+        User:
             type: object
             properties:
-              some column:
-                type: string
-                example: 'value'
-              some other column:
-                type: string
-                example: 'value'
+                email:
+                    type: string
+                    format: email
+                    example: 'example@domain.com'
+                language:
+                    type: string
+                    example: ENG
+                darkmode:
+                    type: boolean
+                    example: false
+                google_name:
+                    type: string
+                    example: John Smith
+                avatar_variant:
+                    type: string
+                    example: marble
+                avatar_colors:
+                    type: array
+                    items:
+                        type: string
+                        example: '#92A1C6'
+                    minItems: 5
+                    maxItems: 5
+        RecipeIngredient:
+            type: object
+            properties:
+                uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
+                user_uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
+                recipe:
+                    type: string
+                    example: Lasagna
+                ingredient:
+                    type: string
+                    example: tomato sauce
+                quantity:
+                    type: number
+                    example: 400
+                unit:
+                    type: string
+                    example: ml
+                section:
+                    type: string
+                    example: seasonings
+                kCal:
+                    type: number
+                    example: 0
+                index:
+                    type: number
+                    example: 1
+        ListIngredient:
+            type: object
+            properties:
+                uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
+                user_uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
+                title:
+                    type: string
+                    example: Italian
+                checked:
+                    type: boolean
+                    example: false
+                ingredient:
+                    type: string
+                    example: tomato sauce
+                quantity:
+                    type: number
+                    example: 400
+                unit:
+                    type: string
+                    example: ml
+                section:
+                    type: string
+                    example: seasonings
+                index:
+                    type: number
+                    example: 1
+                last_modified:
+                    type: string
+                    format: date-time
+                    example: '2023-01-01 16:07:18.103861+00'
+    requestBodies:
+        Recipe:
+            description: Recipe ingredients that needs to be added to updated
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/components/schemas/RecipeIngredient'
+        List:
+            description: List ingredients that needs to be added to updated
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: array
+                        items:
+                            $ref: '#/components/schemas/ListIngredient'
+        User:
+            description: User properties to update
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            some column:
+                                type: string
+                                example: 'value'
+                            some other column:
+                                type: string
+                                example: 'value'

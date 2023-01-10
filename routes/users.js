@@ -9,19 +9,16 @@ router.get('/', checkAuthenticated, (req, res, next) => {
 	const user = {
 		email: req.user.email,
 		language: req.user.language,
-		darktheme: req.user.darktheme,
-		googleName: req.user.googleName,
-		avatarVariant: req.user.avatarVariant,
-		avatarColors: req.user.avatarColors
+		dark_theme: req.user.dark_theme,
+		google_name: req.user.google_name,
+		avatar_variant: req.user.avatar_variant,
+		avatar_colors: req.user.avatar_colors,
 	};
 	res.status(200).send(user);
 });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
-	const { data, error } = await supabase
-		.from('users')
-		.update(req.body)
-		.eq('uuid', req.user.uuid);
+	const { data, error } = await supabase.from('users').update(req.body).eq('uuid', req.user.uuid);
 
 	if (error) {
 		errorMessage = new Error('Database failed to update a user.');
@@ -35,7 +32,6 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 });
 
 router.delete('/', checkAuthenticated, async (req, res, next) => {
-
 	if ((req.user.role = 'admin')) {
 		errorMessage = 'Cannot delete admin';
 		console.error(errorMessage);

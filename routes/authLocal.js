@@ -19,7 +19,7 @@ router.post('/signin', (req, res, next) => {
 			console.log(res.locals.errMessage);
 			return res.status(403).send();
 		}
-		
+
 		// The app uses a custom callback so that it can access the error messages. Therfore, the login() function must be manually implemented.
 		req.login(user, (loginErr) => {
 			if (loginErr) {
@@ -27,14 +27,14 @@ router.post('/signin', (req, res, next) => {
 			}
 			return res.status(200).send();
 		});
-	})(req, res, next);  // <<== appended (req,res,next). Explanation above.
+	})(req, res, next); // <<== appended (req,res,next). Explanation above.
 });
 
 router.post('/signup', async (req, res) => {
-	const { email, password, darktheme, language } = req.body;
+	const { email, password, dark_theme, language } = req.body;
 
 	//Validate user input before calling database
-	const validate = signupValidation({email: req.body.email, password: req.body.password});
+	const validate = signupValidation({ email: req.body.email, password: req.body.password });
 	if (validate.error) return res.status(400).send(validate.error.details[0].message);
 
 	let { data, error } = await supabase.from('users').select('*').eq('email', email);
@@ -67,7 +67,7 @@ router.post('/signup', async (req, res) => {
 			hashed_password: hashedPassword,
 			role: 'user',
 			language: language,
-			darkt_heme: darktheme,
+			darkt_heme: dark_theme,
 			avatar_variant: 'beam',
 			avatar_colors: randomColorArray(),
 		};

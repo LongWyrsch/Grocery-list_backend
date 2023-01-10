@@ -1,12 +1,12 @@
-function organizeIngredients(card_uuid, allIngredients) {
+function organizeIngredients(allIngredients) {
     let organizedObject = {};
 	let organizedArray = [];
 
 	allIngredients.forEach((ingredients) => {
         // Ex: obj = { uuid : [{Ingredient:'Cheese', ...}] }
         //  obj.Lasagna = obj.Lasagna? [...obj.Lasagna, newIngredient] : [newIngredient]
-		organizedObject[ingredients[card_uuid]] = organizedObject[ingredients[card_uuid]]
-			? [...organizedObject[ingredients[card_uuid]], ingredients]
+		organizedObject[ingredients['card_uuid']] = organizedObject[ingredients['card_uuid']]
+			? [...organizedObject[ingredients['card_uuid']], ingredients]
 			: [ingredients];
 	});
 

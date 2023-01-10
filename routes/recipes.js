@@ -21,7 +21,7 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 		return;
 	}
 
-	let organizedIngredientsArray = organizeIngredients('recipes', allRecipes.data)
+	let organizedIngredientsArray = organizeIngredients(allRecipes.data)
 	res.status(200).send(organizedIngredientsArray)
 });
 

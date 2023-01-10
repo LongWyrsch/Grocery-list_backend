@@ -11,7 +11,7 @@ module.exports = function (passport) {
 				callbackURL: '/auth/google/callback',
 			},
 			async function (accessToken, refreshToken, profile, cb) {
-				// User.findOrCreate({ googleId: profile.id }, function (err, user) {
+				// User.findOrCreate({ google_id: profile.id }, function (err, user) {
 				let user = {};
 				let { data, error } = await supabase.from('users').select('*').eq('google_id', profile.id);
 
@@ -22,10 +22,12 @@ module.exports = function (passport) {
 
 				if (data.length > 1) {
 					//Error. Profile id should be unique.
-					return cb(null, false, {message: 'Database returned more than 1 user matching a given Google id.'});
+					return cb(null, false, {
+						message: 'Database returned more than 1 user matching a given Google id.',
+					});
 				} else if (data.length === 0) {
 					// add that user
-					let language = ''
+					let language = '';
 					switch (profile._json.locale.slice(0, 2)) {
 						case 'de':
 							language = 'DE';
@@ -57,11 +59,11 @@ module.exports = function (passport) {
 					user = {
 						role: data[0].role,
 						language: data[0].language,
-						darktheme: data[0].dark_theme,
-						googleId: data[0].google_id,
-						googleName: data[0].google_name,
-						avatarVariant: data[0].avatar_variant,
-						avatarColors: data[0].avatar_colors,
+						dark_theme: data[0].dark_theme,
+						google_id: data[0].google_id,
+						google_name: data[0].google_name,
+						avatar_variant: data[0].avatar_variant,
+						avatar_colors: data[0].avatar_colors,
 					};
 				}
 				return cb(null, user);
