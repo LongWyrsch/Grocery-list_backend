@@ -7,7 +7,7 @@ const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passp
 const organizeIngredients = require('../utils/organizeIngredients') 
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
-	let allRecipes = await supabase.from('recipes').select('*').eq('user_uuid', req.user.uuid);
+	let allRecipes = await supabase.from('recipes').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
 	if (allRecipes.error) {
 		errorMessage = 'Database select operation failed';
 		console.error(errorMessage);

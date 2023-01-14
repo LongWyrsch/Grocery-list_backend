@@ -8,7 +8,7 @@ const organizeIngredients = require('../utils/organizeIngredients')
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
 
-	let allLists = await supabase.from('lists').select('*').eq('user_uuid', req.user.uuid);
+	let allLists = await supabase.from('lists').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
 	if (allLists.error) {
 		errorMessage = 'Database select operation failed';
 		console.error(errorMessage);
