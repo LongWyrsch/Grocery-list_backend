@@ -42,10 +42,15 @@ router.post('/', checkAuthenticated, async (req, res, next) => {
 });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
-	let updatedIngredients = req.body;
-	const { error } = await supabase.rpc('update_recipe_ingredients', {
-		ingredients: updatedIngredients,
-	});
+	let updatedRecipe = req.body;
+	// const { error } = await supabase.rpc('update_recipe_ingredients', {
+	// 	ingredients: updatedRecipe,
+	// });
+
+	const { data, error } = await supabase
+	.from('recipes')
+	.upsert(updatedRecipe)
+	.select()
 
 	if (error) {
 		errorMessage = 'Database update operation failed';
@@ -64,10 +69,8 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 
     let operationError
 
-	console.log(uuidToDelete, recipeToDelete)
-
     if (uuidToDelete) {
-	    const { error } = await supabase.from('recipes').delete().in('uuid', uuidToDelete);
+		const { error } = await supabase.from('recipes').delete().in('uuid', uuidToDelete);
         operationError = error
     } else if (recipeToDelete) {
         const { error } = await supabase.from('recipes').delete().eq('card_uuid', recipeToDelete).eq('user_uuid', req.user.uuid);

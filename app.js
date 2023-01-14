@@ -35,16 +35,22 @@ require('./passport/passportConfigSerialize.js')(passport);
 
 
 //Cors_________________________________________________________________________________________________
-// Needed because the POST request has custom header to send JSON object
-app.options('/auth/local/login', cors()) 
-app.options('/auth/local/register', cors()) 
-app.options('/users', cors()) 
-
 var corsOptions = {
 	credentials: true,
+	preflightContinue: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 	origin: 'http://localhost:3001',
 	optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
+
+// Needed because the POST request has custom header to send JSON object
+app.options('*', cors(corsOptions))
+// app.options('/auth/local/signin', cors()) 
+// app.options('/auth/local/signup', cors()) 
+// app.options('/users', cors()) 
+// app.options('/recipes', cors()) 
+// app.options('/lists', cors()) 
+
 app.use(cors(corsOptions))
 //Cors_________________________________________________________________________________________________
 
