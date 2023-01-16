@@ -1,7 +1,6 @@
 function organizeIngredients(allIngredients) {
     let organizedObject = {};
 	let organizedArray = [];
-
 	allIngredients.forEach((ingredients) => {
         // Ex: obj = { uuid : [{Ingredient:'Cheese', ...}] }
         //  obj.Lasagna = obj.Lasagna? [...obj.Lasagna, newIngredient] : [newIngredient]

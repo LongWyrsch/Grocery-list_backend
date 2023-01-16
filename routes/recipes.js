@@ -17,7 +17,7 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 	}
 
 	if (allRecipes.data.length === 0) {
-		res.status(204).json([]);
+		res.status(204).send([]);
 		return;
 	}
 
@@ -64,13 +64,13 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 });
 
 router.delete('/', checkAuthenticated, async (req, res, next) => {
-	let uuidToDelete = req.body.uuid; // Delete some ingredients from a recipe
-	let recipeToDelete = req.body.recipe; // Delete an entire recipe
+	let uuidToDelete = req.body.row_uuid; // Delete some ingredients from a recipe
+	let recipeToDelete = req.body.card_uuid; // Delete an entire recipe
 
     let operationError
 
     if (uuidToDelete) {
-		const { error } = await supabase.from('recipes').delete().in('uuid', uuidToDelete);
+		const { error } = await supabase.from('recipes').delete().in('uuid', uuidToDelete).eq('user_uuid', req.user.uuid);
         operationError = error
     } else if (recipeToDelete) {
         const { error } = await supabase.from('recipes').delete().eq('card_uuid', recipeToDelete).eq('user_uuid', req.user.uuid);

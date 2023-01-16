@@ -21,6 +21,8 @@ Table "users" {
   "dark_theme" boolean [not null, default: false]
   "avatar_variant" text [not null]
   "avatar_colors" "varchar(6)[]" [not null]
+  "layouts_recipes" json NULL,
+  "layouts_lists" json NULL
 }
 
 Table "recipes" {
@@ -35,7 +37,6 @@ Table "recipes" {
   "section" text [not null, ref: > sections.section]
   "kCal" numeric [null]
   "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
-  "grid_position" json [NULL]
 }
 
 Table "lists" {
@@ -50,5 +51,4 @@ Table "lists" {
   "section" text [not null, ref: > sections.section]
   "checked" boolean [not null]
   "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
-  "grid_position" json [NULL]
 }

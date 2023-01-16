@@ -13,6 +13,8 @@ router.get('/', checkAuthenticated, (req, res, next) => {
 		google_name: req.user.google_name,
 		avatar_variant: req.user.avatar_variant,
 		avatar_colors: req.user.avatar_colors,
+		layouts_recipes: req.user.layouts_recipes,
+		layouts_lists: req.user.layouts_lists
 	};
 	res.status(200).send(user);
 });

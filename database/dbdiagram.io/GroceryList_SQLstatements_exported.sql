@@ -20,7 +20,9 @@ CREATE TABLE "users" (
   "language" text NOT NULL DEFAULT 'EN',
   "dark_theme" boolean NOT NULL DEFAULT false,
   "avatar_variant" text NOT NULL,
-  "avatar_colors" varchar(6)[] NOT NULL
+  "avatar_colors" varchar(6)[] NOT NULL,
+  "layouts_recipes" json NULL,
+  "layouts_lists" json NULL
 );
 
 CREATE TABLE "recipes" (
@@ -35,7 +37,6 @@ CREATE TABLE "recipes" (
   "section" text NOT NULL,
   "kCal" numeric,
   "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc')),
-  "grid_position" json
 );
 
 CREATE TABLE "lists" (
@@ -50,7 +51,6 @@ CREATE TABLE "lists" (
   "section" text NOT NULL,
   "checked" boolean NOT NULL,
   "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc')),
-  "grid_position" json
 );
 
 ALTER TABLE "users" ADD FOREIGN KEY ("role") REFERENCES "roles" ("role");

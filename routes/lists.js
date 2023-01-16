@@ -7,7 +7,6 @@ const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passp
 const organizeIngredients = require('../utils/organizeIngredients') 
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
-
 	let allLists = await supabase.from('lists').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
 	if (allLists.error) {
 		errorMessage = 'Database select operation failed';
@@ -22,7 +21,7 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 		return;
 	}
 	
-	let organizedIngredientsArray = organizeIngredients('lists', allLists.data)
+	let organizedIngredientsArray = organizeIngredients(allLists.data)
 	res.status(200).send(organizedIngredientsArray)
 	
 });
@@ -66,7 +65,7 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
     let operationError
 
     if (uuidToDelete) {
-		const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete);
+		const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete).eq('user_uuid', req.user.uuid);
         operationError = error
     } else if (listToDelete) {
         const { error } = await supabase.from('lists').delete().eq('title', listToDelete).eq('user_uuid', req.user.uuid);
