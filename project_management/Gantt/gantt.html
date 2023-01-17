@@ -4,108 +4,111 @@
         <link rel="icon" href="./gantt.png">
 	</head>
 	<body>
-		<pre class="mermaid">
-            gantt
-            title Grocery list
-            dateFormat YYYY-MM-DD
-            axisFormat %d
-            tickInterval 1day
-        
-            %% [Git] --> git commit --> red
-            %% ** --> notes in Obsidian --> bold
+        <div class="chartContainer">
+            <pre class="mermaid">
+                gantt
+                title Grocery list
+                dateFormat YYYY-MM-DD
+                axisFormat %d
+                tickInterval 1day
+            
+                %% [Git] --> git commit --> red
+                %% ** --> notes in Obsidian --> bold
 
-            section UI/UX design
-                wireframe: done, wireframe, 2022-12-07, 1d
-                prototype: done, prototype, after wireframe, 2d
-                color: done, color, after prototype, 4h
-                logo: done, logo, after color, 1d
+                section UI/UX design
+                    wireframe: done, wireframe, 2022-12-07, 1d
+                    prototype: done, prototype, after wireframe, 2d
+                    color: done, color, after prototype, 12h
+                    logo: done, logo, after color, 1d
 
-            section Back end
-                Schema relationship diagram: done, ard, 2022-12-17, 1d
-                Review Express session and Passport: done, resap, after ard, 3d
-                Set up SQL database: done, susd, after resap, 1d
-                [Git] Initialize Express project **: done, irp, after susd, 4h
-                Test Supabase API: done, tsa, after irp, 12h
-                [Git] Set up Google auth: done, suga, after tsa, 36h
-                [Git] Set up local auth: done, sula, 2022-12-25, 2d
-                [Git] Write OpenAPI: done, wo, after sula, 3d
-                Add endpoint PUT /users: done, aepu, after wo, 1d
-                Add endpoint DELETE /users: done, aedu, after wo, 1d
-                Add endpoint PUT /avatars: done, aepa, after wo, 1d
-                [Git] Add endpoints PUT/users DELETE/users PUT/avatars: done, milestone, gaeua, after aepa, 0d
-                Create Supabase functions: done, csfrdv, after aepa, 1d
-                Add endpoint GET /recipes: done, aegr, after aepa, 1d
-                Add endpoint POST /recipes: done, aepor, after aepa, 1d
-                Add endpoint PUT /recipes: done, aepur, after aepa, 1d
-                Add endpoint DELETE /recipes: done, aedr, after aepa, 1d
-                [Git] Add endpoints /recipes: done, milestone, gaer, after aedr, 0d
-                Add endpoint GET /lists: done, aegl, after aedr, 12h
-                Add endpoint POST /lists: done, aepol, after aedr, 12h
-                Add endpoint PUT /lists: done, aepul, after aedr, 12h
-                Add endpoint DELETE /lists: done, aedl, after aedr, 12h
-                [Git] Add endpoints /lists: done, milestone, gael, after aedl, 0d
-                [Git] Add data validation: done, adva, after addlg, 2h
-                [Git] Add organizeIngredients.js: done, aorgi, after acam, 12h
-                [Git] Update user schema, debug signin and signup routes: done, uusdssr, after aorgi, 12h
+                section Back end
+                    Schema relationship diagram: done, ard, 2022-12-17, 1d
+                    Review Express session and Passport: done, resap, after ard, 3d
+                    Set up SQL database: done, susd, after resap, 1d
+                    [Git] Initialize Express project **: done, irp, after susd, 4h
+                    Test Supabase API: done, tsa, after irp, 12h
+                    [Git] Set up Google auth: done, suga, after tsa, 36h
+                    [Git] Set up local auth: done, sula, 2022-12-25, 2d
+                    [Git] Write OpenAPI: done, wo, after sula, 3d
+                    Add endpoint PUT /users: done, aepu, after wo, 1d
+                    Add endpoint DELETE /users: done, aedu, after wo, 1d
+                    Add endpoint PUT /avatars: done, aepa, after wo, 1d
+                    [Git] Add endpoints PUT/users DELETE/users PUT/avatars: done, milestone, gaeua, after aepa, 0d
+                    Create Supabase functions: done, csfrdv, after aepa, 1d
+                    Add endpoint GET /recipes: done, aegr, after aepa, 1d
+                    Add endpoint POST /recipes: done, aepor, after aepa, 1d
+                    Add endpoint PUT /recipes: done, aepur, after aepa, 1d
+                    Add endpoint DELETE /recipes: done, aedr, after aepa, 1d
+                    [Git] Add endpoints /recipes: done, milestone, gaer, after aedr, 0d
+                    Add endpoint GET /lists: done, aegl, after aedr, 12h
+                    Add endpoint POST /lists: done, aepol, after aedr, 12h
+                    Add endpoint PUT /lists: done, aepul, after aedr, 12h
+                    Add endpoint DELETE /lists: done, aedl, after aedr, 12h
+                    [Git] Add endpoints /lists: done, milestone, gael, after aedl, 0d
+                    [Git] Add data validation: done, adva, after addlg, 2h
+                    [Git] Add organizeIngredients.js: done, aorgi, after acam, 12h
+                    [Git] Update user schema, debug signin and signup routes: done, uusdssr, after aorgi, 12h
 
-            section Front end 
-                Review React: done, rr, after logo, 7d
-                [Git] Initialize React project **: done, irp, after rr, 1d
-                Learn drag/drop in React: done, ldndr, after aedl, 12h
-                Learn lightdark mode in React: done, lldmr, after aedl, 12h
-                Learn language-picker in React: done, llpr, after aedl, 12h
-                Add column 'modified date' to lists: done, acldl, after aedl, 12h
-                Test food/kCal API **: done, tfk, after aedl, 12h
-                [Git] Add ligth dark mode: done, aldm, after tfk, 12h
-                [Git] Add language picker **: done, alanp, after aldm, 12h
-                [Git] Add normalize.css and font: done, anaf, after alanp, 2h 
-                [Git] Add design system CSS, textfield and button component: done, adstb, after anaf, 2d
-                Add login page: done, addlg, after anaf, 2d
-                Add user credentials validation: done, aucv, after addlg, 12h
-                [Git] Add login page and user credentials validation: done, milestone, alpuc, after aucv, 0d
-                [Git] Add registration page: done, addrp, after alpuc, 12h
-                [Git] Add language dropdown component: done, aldc, after alpuc, 1d
-                [Git] Add navbar: done, anav, after aldc, 12h
-                [Git] Add user state: done, aust, after anav, 12h
-                [Git] Add corner avatar menu: done, acam, after aust, 12h
-                [Git] Debug signin and signup routes: done, dsasr, after acam, 1d
-                [Git] Add Grid component and recipesSlice**: done, agcar, after dsasr, 2d
-                [Git] Add MiniCard component: done, aminic, after agcar, 12h
-                Learn react-beautiful-dnd: done, lrdnd, after aminic, 12h
-                [Git] Add RecipeCard component: done, arcc, after lrdnd, 1d
-                [Git] Add update and delete function to RecipeCard: done, audftr, after arcc, 1d
-                [Git] Add react-beautiful-dnd to RecipeCard: done, arbdnd, after audftr, 12h
-                Save user grid layout: done, sugl, after arbdnd, 1d
-                Add row delete function: done, ardf, after sugl, 1d
-                [Git] Save user grid layout and add row delete function: milestone, done, auglardf, after ardf, 0d
-                %% ~ ~ ~ ~ ~ ~ ==> H E R E <== ~ ~ ~ ~ ~ ~ ~ 
-                [Git] Add create card function: acftr, after ardf, 1d
-                %% Update all database documents to include layouts_recipes layouts_lists
-                [Git] Add listsSlice and RecipeCard: aslarc, after acftr, 1d
-                [Git] Add user settings page: ausp, after aslarc, 1d
-                [Git] Add recipe CRUD features: arcf, after ausp, 1d
-                %% List dnd with React-beautiful-dnd
-                [Git] Food/kCal API: fkapi, after arcf, 3d
-                [Git] Add list CRUD features: alcf, after fkapi, 1d
-                %% List dnd with React-beautiful-dnd
-                [Git] Add skeleton loader: skel, after alcf, 3d
-                [Git] Add password recovery function: aprf, after skel, 2d
-                [Git] Improve accessibility: acce, after aprf, 3d
-                FlashMessage?: flash, after acce, 1d
+                section Front end 
+                    Review React: done, rr, after logo, 7d
+                    [Git] Initialize React project **: done, irp, after rr, 1d
+                    Learn drag/drop in React: done, ldndr, after aedl, 12h
+                    Learn lightdark mode in React: done, lldmr, after aedl, 12h
+                    Learn language-picker in React: done, llpr, after aedl, 12h
+                    Add column 'modified date' to lists: done, acldl, after aedl, 12h
+                    Test food/kCal API **: done, tfk, after aedl, 12h
+                    [Git] Add ligth dark mode: done, aldm, after tfk, 12h
+                    [Git] Add language picker **: done, alanp, after aldm, 12h
+                    [Git] Add normalize.css and font: done, anaf, after alanp, 2h 
+                    [Git] Add design system CSS, textfield and button component: done, adstb, after alanp, 2d
+                    Add login page: done, addlg, after alanp, 2d
+                    Add user credentials validation: done, aucv, after addlg, 12h
+                    [Git] Add login page and user credentials validation: done, milestone, alpuc, after aucv, 0d
+                    [Git] Add registration page: done, addrp, after alpuc, 12h
+                    [Git] Add language dropdown component: done, aldc, after alpuc, 1d
+                    [Git] Add navbar: done, anav, after aldc, 12h
+                    [Git] Add user state: done, aust, after anav, 12h
+                    [Git] Add corner avatar menu: done, acam, after aust, 12h
+                    [Git] Debug signin and signup routes: done, dsasr, after acam, 1d
+                    [Git] Add Grid component and recipesSlice**: done, agcar, after dsasr, 2d
+                    [Git] Add MiniCard component: done, aminic, after agcar, 12h
+                    Learn react-beautiful-dnd: done, lrdnd, after aminic, 12h
+                    [Git] Add RecipeCard component: done, arcc, after lrdnd, 1d
+                    [Git] Add update and delete function to RecipeCard: done, audftr, after arcc, 1d
+                    [Git] Add react-beautiful-dnd to RecipeCard: done, arbdnd, after audftr, 12h
+                    Add queueTask to buffer server requests: done, aqtbsr, after arbdnd, 1d
+                    Save user grid layout: done, sugl, after aqtbsr, 1d
+                    Add row delete function: done, ardf, 2023-01-16, 12h
+                    [Git] Save user grid layout and add row delete function: milestone, done, auglardf, after ardf, 0d
+                    [Git] Make card title editabe and save card modification time: done, matescm, after ardf, 12h
+                    [Git] Add create card function: done, acftr, after ardf, 12h
+                    %% ~ ~ ~ ~ ~ ~ ==> H E R E <== ~ ~ ~ ~ ~ ~ ~ 
+                    [Git] Extend features to lists: eftl, after ardf, 12h
+                    [Git] Add user settings page: ausp, after eftl, 1d
+                    [Git] Food/kCal API: fkapi, after ausp, 3d
+                    [Git] Expand translation to all pages: attap, after fkapi, 3h
+                        %% Date format in title on new card
+                    [Git] Add skeleton loader: skel, after attap, 3d
+                    [Git] Add password recovery function: aprf, after skel, 2d
+                    [Git] Improve accessibility: acce, after aprf, 3d
+                    FlashMessage?: flash, after acce, 1d
 
-            section Deploy
-                Deploy on Netlify: dpn, after acce, 12h
-                Update to HTTPS: uhttps, after dpn, 1d
-                Update all URLs: uaurl, after uhttps, 12h
-                Update URLs in openAPI: urlsapi, after uaurl, 12h
+                section Deploy
+                    Deploy on Netlify: dpn, after acce, 12h
+                    Update to HTTPS: uhttps, after dpn, 1d
+                    Update all URLs: uaurl, after uhttps, 12h
+                    Update URLs in openAPI: urlsapi, after uaurl, 12h
 
-        </pre>
-		<script type="module">
-			import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
-			mermaid.initialize({ startOnLoad: true });
-		</script>
-		<script src="./myscript.js"></script>
-	</body>
+            </pre>
+        </div>
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
+            mermaid.initialize({ 
+                startOnLoad: true,
+            });
+        </script>
+    </body>
+    <script src="./myscript.js"></script>
 </html>
 
 

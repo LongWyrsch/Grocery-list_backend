@@ -43,9 +43,16 @@ router.post('/', checkAuthenticated, async (req, res, next) => {
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
 	let updatedIngredients = req.body;
-	const { error } = await supabase.rpc('update_list_ingredients', {
-		ingredients: updatedIngredients,
-	});
+	// const { error } = await supabase.rpc('update_list_ingredients', {
+	// 	ingredients: updatedIngredients,
+	// });
+
+	console.log(updatedIngredients)
+
+	const { data, error } = await supabase
+	.from('lists')
+	.upsert(updatedIngredients)
+	.select()
 
 	if (error) {
 		errorMessage = 'Database update operation failed';

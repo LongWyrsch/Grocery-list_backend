@@ -6,21 +6,46 @@ const supabase = require('../supabase');
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
 
 router.get('/', checkAuthenticated, (req, res, next) => {
+
+	let parsedLayoutsRecipes
+	try {
+		parsedLayoutsRecipes = JSON.parse(req.user.layouts_recipes)
+	} catch (error) {
+		parsedLayoutsRecipes = {}
+	}
+	
+	let parsedLayoutsLists
+	try {
+		parsedLayoutsLists = JSON.parse(req.user.layouts_lists)
+	} catch (error) {
+		parsedLayoutsLists = {}
+	}
+
 	const user = {
+		uuid: req.user.uuid,
 		email: req.user.email,
 		language: req.user.language,
 		dark_theme: req.user.dark_theme,
 		google_name: req.user.google_name,
 		avatar_variant: req.user.avatar_variant,
 		avatar_colors: req.user.avatar_colors,
-		layouts_recipes: req.user.layouts_recipes,
-		layouts_lists: req.user.layouts_lists
+		layouts_recipes: parsedLayoutsRecipes, 
+		layouts_lists: parsedLayoutsLists
 	};
+
 	res.status(200).send(user);
 });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
-	const { data, error } = await supabase.from('users').update(req.body).eq('uuid', req.user.uuid);
+	let updatedUser = req.body
+
+	// Convert grid layouts to JSON
+	updatedUser = {...updatedUser, layouts_recipes: JSON.stringify(updatedUser.layouts_recipes)} 
+	updatedUser = {...updatedUser, layouts_lists: JSON.stringify(updatedUser.layouts_lists)} 
+
+	const { data, error } = await supabase.from('users').update(updatedUser).eq('uuid', req.user.uuid);
+
+
 
 	if (error) {
 		errorMessage = new Error('Database failed to update a user.');

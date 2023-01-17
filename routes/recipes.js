@@ -42,14 +42,14 @@ router.post('/', checkAuthenticated, async (req, res, next) => {
 });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
-	let updatedRecipe = req.body;
+	let updatedIngredients = req.body;
 	// const { error } = await supabase.rpc('update_recipe_ingredients', {
-	// 	ingredients: updatedRecipe,
+	// 	ingredients: updatedIngredients,
 	// });
 
 	const { data, error } = await supabase
 	.from('recipes')
-	.upsert(updatedRecipe)
+	.upsert(updatedIngredients)
 	.select()
 
 	if (error) {
