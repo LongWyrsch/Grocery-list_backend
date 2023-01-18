@@ -26,28 +26,23 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 	
 });
 
-router.post('/', checkAuthenticated, async (req, res, next) => {
-	let insertIngredients = req.body;
-	const { error } = await supabase.from('lists').insert(insertIngredients);
+// router.post('/', checkAuthenticated, async (req, res, next) => {
+// 	let insertIngredients = req.body;
+// 	const { error } = await supabase.from('lists').insert(insertIngredients);
 
-	if (error) {
-		errorMessage = 'Database insert operation failed';
-		console.error(errorMessage);
-		console.log(error);
-		res.status(502).send(errorMessage);
-		return;
-	}
+// 	if (error) {
+// 		errorMessage = 'Database insert operation failed';
+// 		console.error(errorMessage);
+// 		console.log(error);
+// 		res.status(502).send(errorMessage);
+// 		return;
+// 	}
 
-	res.status(201);
-});
+// 	res.status(201);
+// });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
 	let updatedIngredients = req.body;
-	// const { error } = await supabase.rpc('update_list_ingredients', {
-	// 	ingredients: updatedIngredients,
-	// });
-
-	console.log(updatedIngredients)
 
 	const { data, error } = await supabase
 	.from('lists')
@@ -66,8 +61,8 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 });
 
 router.delete('/', checkAuthenticated, async (req, res, next) => {
-	let uuidToDelete = req.query.uuid;
-	let listToDelete = req.query.list;
+	let uuidToDelete = req.body.row_uuid;
+	let listToDelete = req.body.card_uuid;
 
     let operationError
 
@@ -75,7 +70,7 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 		const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete).eq('user_uuid', req.user.uuid);
         operationError = error
     } else if (listToDelete) {
-        const { error } = await supabase.from('lists').delete().eq('title', listToDelete).eq('user_uuid', req.user.uuid);
+        const { error } = await supabase.from('lists').delete().eq('card_uuid', listToDelete).eq('user_uuid', req.user.uuid);
         operationError = error
     }
 

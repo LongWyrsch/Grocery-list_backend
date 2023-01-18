@@ -25,21 +25,41 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 	res.status(200).send(organizedIngredientsArray)
 });
 
-router.post('/', checkAuthenticated, async (req, res, next) => {
-	let insertIngredients = req.body;
-
-	const { error } = await supabase.from('recipes').insert(insertIngredients);
-
+router.post('/join', checkAuthenticated, async(req,res,next)=> {
+	const selectedRecipes = req.body.selectedRecipes
+	const user_uuid = req.user.uuid
+	
+	// const { data, error } = await supabase.rpc('test2', { recipe_uuid: ['6aa80830-8ecc-49b7-958c-9aa6a7b89658', 'a6bf5db6-b76b-43af-a963-fab17017d731'],  useruuid: '5e08e3ee-b46e-46e4-a672-b364ed62c6a9'});
+	const { data, error } = await supabase.rpc('join_ingredients', { 
+		recipe_uuid: selectedRecipes,
+		useruuid: user_uuid
+	});
 	if (error) {
-		errorMessage = 'Database insert operation failed';
+		errorMessage = 'Database select operation failed';
 		console.error(errorMessage);
 		console.log(error);
 		res.status(502).send(errorMessage);
 		return;
 	}
 
-	res.status(201);
-});
+	res.status(200).send(data)
+})
+
+// router.post('/', checkAuthenticated, async (req, res, next) => {
+// 	let insertIngredients = req.body;
+
+// 	const { error } = await supabase.from('recipes').insert(insertIngredients);
+
+// 	if (error) {
+// 		errorMessage = 'Database insert operation failed';
+// 		console.error(errorMessage);
+// 		console.log(error);
+// 		res.status(502).send(errorMessage);
+// 		return;
+// 	}
+
+// 	res.status(201);
+// });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
 	let updatedIngredients = req.body;

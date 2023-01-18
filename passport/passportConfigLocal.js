@@ -26,7 +26,6 @@ module.exports = function (passport) {
 			}
 			
 			const user = data[0];
-			console.log('passportLocal, user: ', user)
 			try {
 				if (await bcrypt.compare(password, user.hashed_password)) {
 					return done(null, user);
