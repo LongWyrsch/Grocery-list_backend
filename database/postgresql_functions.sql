@@ -1,3 +1,6 @@
+-- In JS, send an object { recipe_uuid: ['card_uuid', 'card_uuid'], useruuid: 'useruuid'}
+-- I had to add the r. because it was complaining that the column names were ambiguous
+-- Complained about comparing uuid=text, so I had to cast the useruuid to text (useruuid::uuid)
 create or replace function join_ingredients(recipe_uuid text[], useruuid text)
 returns TABLE(user_uuid uuid, ingredient text, quantity numeric, unit text, section text) 
 language plpgsql

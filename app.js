@@ -60,13 +60,5 @@ app.use('/users', require('./routes/users'))
 app.use('/recipes', require('./routes/recipes'))
 app.use('/lists', require('./routes/lists'))
 
-app.get('/logout', (req, res) => {
-	req.logout(function(err) {
-    if (err) { return next(err); }
-	res.redirect('http://localhost:3001/signin');
-    // res.status(200).send();
-  });
-});
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, console.log(`Server started on port ${PORT}`));

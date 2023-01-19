@@ -36,6 +36,14 @@ router.get('/', checkAuthenticated, (req, res, next) => {
 	res.status(200).send(user);
 });
 
+router.get('/logout', (req, res) => {
+	req.logout(function(err) {
+    if (err) { return next(err); }
+    res.status(200).send();
+  });
+});
+
+
 router.put('/', checkAuthenticated, async (req, res, next) => {
 	let updatedUser = req.body
 
