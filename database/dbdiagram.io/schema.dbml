@@ -18,7 +18,7 @@ Table "users" {
   "google_name" text [null]
   "role" text [not null, default: 'user', ref: > roles.role]
   "language" text [not null, default: 'EN', ref: > languages.language]
-  "dark_theme" boolean [not null, default: false]
+  "theme" text [not null, default: light]
   "avatar_variant" text [not null]
   "avatar_colors" "varchar(6)[]" [not null]
   "layouts_recipes" json NULL,

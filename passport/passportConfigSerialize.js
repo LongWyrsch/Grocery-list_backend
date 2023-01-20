@@ -22,7 +22,7 @@ module.exports = function (passport) {
 			uuid: data[0].uuid,
 			email: data[0].email,
 			language: data[0].language,
-			dark_theme: data[0].dark_theme,
+			theme: data[0].theme,
 			google_name: data[0].google_name,
 			avatar_variant: data[0].avatar_variant,
 			avatar_colors: data[0].avatar_colors,

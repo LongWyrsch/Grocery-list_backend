@@ -50,14 +50,14 @@ CREATE TABLE users (
   google_name text NULL,
   role text NOT NULL DEFAULT 'user' REFERENCES roles(role),
   language text NOT NULL DEFAULT 'EN' REFERENCES languages(language),
-  dark_theme boolean NOT NULL DEFAULT false,
+  theme text NOT NULL DEFAULT light,
   avatar_variant text NOT NULL,
   avatar_colors varchar(7)[5] NOT NULL,
   layouts_recipes json NULL,
   layouts_lists json NULL
 );
 
-INSERT INTO users (email, hashed_password, role, language, dark_theme, avatar_variant, avatar_colors, layouts_recipes) VALUES
+INSERT INTO users (email, hashed_password, role, language, theme, avatar_variant, avatar_colors, layouts_recipes) VALUES
 ('long.nqw@gmail.com', '$2a$10$HBuJAleF8IVQUUjvsnnmnucnyFrkdvYqM82FEuvfPI.zMXpoPih7O', 'admin', 'EN', true, 'beam', ARRAY ['#92A1C6','#146A7C','#F0AB3D','#C271B4','#C20D90'], {"lg":[{"w":2,"h":5,"x":4,"y":0,"i":"67ae76c8-e973-43d3-8981-c99ba6400a27","minW":2,"maxW":2,"minH":1,"maxH":40,"moved":false,"static":false,"isBounded":true},{"w":2,"h":4,"x":0,"y":5,"i":"7df29237-e60f-4a29-9834-e0d196fa98e3","minW":2,"maxW":2,"minH":1,"maxH":40,"moved":false,"static":false,"isBounded":true},{"w":2,"h":5,"x":0,"y":0,"i":"9d9995e2-ac8a-4f5a-8485-801d17143e4f","minW":2,"maxW":2,"minH":1,"maxH":40,"moved":false,"static":false,"isBounded":true},{"w":2,"h":4,"x":6,"y":0,"i":"a6bf5db6-b76b-43af-a963-fab17017d731","minW":2,"maxW":2,"minH":1,"maxH":40,"moved":false,"static":false,"isBounded":true},{"w":2,"h":4,"x":2,"y":0,"i":"6aa80830-8ecc-49b7-958c-9aa6a7b89658","minW":2,"maxW":2,"minH":1,"maxH":40,"moved":false,"static":false,"isBounded":true}]});
 
 CREATE TABLE recipes (

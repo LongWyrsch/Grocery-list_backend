@@ -31,7 +31,7 @@ router.post('/signin', (req, res, next) => {
 });
 
 router.post('/signup', async (req, res) => {
-	const { email, password, dark_theme, language } = req.body;
+	const { email, password, theme, language } = req.body;
 
 	//Validate user input before calling database
 	const validate = signupValidation({ email: req.body.email, password: req.body.password });
@@ -67,7 +67,7 @@ router.post('/signup', async (req, res) => {
 			hashed_password: hashedPassword,
 			role: 'user',
 			language: language,
-			darkt_heme: dark_theme,
+			theme: theme,
 			avatar_variant: 'beam',
 			avatar_colors: randomColorArray(),
 		};

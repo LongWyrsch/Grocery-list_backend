@@ -59,7 +59,7 @@ module.exports = function (passport) {
 					user = {
 						role: data[0].role,
 						language: data[0].language,
-						dark_theme: data[0].dark_theme,
+						theme: data[0].theme,
 						google_id: data[0].google_id,
 						google_name: data[0].google_name,
 						avatar_variant: data[0].avatar_variant,

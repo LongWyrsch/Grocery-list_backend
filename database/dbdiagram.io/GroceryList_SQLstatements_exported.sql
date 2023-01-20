@@ -18,7 +18,7 @@ CREATE TABLE "users" (
   "google_name" text,
   "role" text NOT NULL DEFAULT 'user',
   "language" text NOT NULL DEFAULT 'EN',
-  "dark_theme" boolean NOT NULL DEFAULT false,
+  "theme" text NOT NULL DEFAULT light,
   "avatar_variant" text NOT NULL,
   "avatar_colors" varchar(6)[] NOT NULL,
   "layouts_recipes" json NULL,
