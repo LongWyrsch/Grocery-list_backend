@@ -42,6 +42,7 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 // });
 
 router.put('/', checkAuthenticated, async (req, res, next) => {
+	console.log('PUT /lists')
 	let updatedIngredients = req.body;
 
 	const { data, error } = await supabase

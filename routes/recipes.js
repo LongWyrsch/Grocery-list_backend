@@ -45,27 +45,10 @@ router.post('/join', checkAuthenticated, async(req,res,next)=> {
 	res.status(200).send(data)
 })
 
-// router.post('/', checkAuthenticated, async (req, res, next) => {
-// 	let insertIngredients = req.body;
-
-// 	const { error } = await supabase.from('recipes').insert(insertIngredients);
-
-// 	if (error) {
-// 		errorMessage = 'Database insert operation failed';
-// 		console.error(errorMessage);
-// 		console.log(error);
-// 		res.status(502).send(errorMessage);
-// 		return;
-// 	}
-
-// 	res.status(201);
-// });
-
+// Add and modify 
 router.put('/', checkAuthenticated, async (req, res, next) => {
+	console.log('put /recipes')
 	let updatedIngredients = req.body;
-	// const { error } = await supabase.rpc('update_recipe_ingredients', {
-	// 	ingredients: updatedIngredients,
-	// });
 
 	const { data, error } = await supabase
 	.from('recipes')

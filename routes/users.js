@@ -51,46 +51,43 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 	updatedUser = { ...updatedUser, layouts_recipes: JSON.stringify(updatedUser.layouts_recipes) };
 	updatedUser = { ...updatedUser, layouts_lists: JSON.stringify(updatedUser.layouts_lists) };
 
-	if (updatedUser.email !== req.user.email || 'hashed_password' in updatedUser) {
-		//Validate user input before calling database
-		
-		
-		if (updatedUser.email !== req.user.email) {
-			const validate = emailValidation({ email: updatedUser.email});
-			if (validate.error) return res.status(400).send(validate.error.details[0].message);
+	// If user tried to change his email, validate it	
+	if (updatedUser.email !== req.user.email) {
+		const validate = emailValidation({ email: updatedUser.email});
+		if (validate.error) return res.status(400).send(validate.error.details[0].message);
 
-			let { data, error } = await supabase.from('users').select('*').eq('email', updatedUser.email);
-			let errorMessage = '';
+		let { data, error } = await supabase.from('users').select('*').eq('email', updatedUser.email);
+		let errorMessage = '';
 
-			if (error) {
-				errorMessage = new Error('Supabase failed to retrieving a user with matching email.');
-				console.log(errorMessage);
-				console.error(error);
-				res.status(502).send(errorMessage);
-				return;
-			} else if (data.length > 1) {
-				//Error. Profile id should be unique.
-				errorMessage = 'Supabase returned more than 1 user matching a given email.';
-				console.log(errorMessage);
-				res.status(500).send(errorMessage);
-				return;
-			} else if (data.length === 1) {
-				errorMessage = 'User with that email already exists.';
-				console.log(errorMessage);
-				res.status(403).send(errorMessage);
-				return;
-			}
-		}
-		
-		if (updatedUser.hashed_password && updatedUser.hashed_password !== '') {
-			const validate = passwordValidation({ password: updatedUser.hashed_password });
-			if (validate.error) return res.status(400).send(validate.error.details[0].message);
-
-			let hashedPassword = await bcrypt.hash(updatedUser.hashed_password, 10);
-			updatedUser.hashed_password = hashedPassword
+		if (error) {
+			errorMessage = new Error('Supabase failed to retrieving a user with matching email.');
+			console.log(errorMessage);
+			console.error(error);
+			res.status(502).send(errorMessage);
+			return;
+		} else if (data.length > 1) {
+			//Error. Profile id should be unique.
+			errorMessage = 'Supabase returned more than 1 user matching a given email.';
+			console.log(errorMessage);
+			res.status(500).send(errorMessage);
+			return;
+		} else if (data.length === 1) {
+			errorMessage = 'User with that email already exists.';
+			console.log(errorMessage);
+			res.status(403).send(errorMessage);
+			return;
 		}
 	}
+	
+	// If user tried to change his password, validate it.
+	if ('hashed_password' in updatedUser && updatedUser.hashed_password !== '') {
+		const validate = passwordValidation({ password: updatedUser.hashed_password });
+		if (validate.error) return res.status(400).send(validate.error.details[0].message);
 
+		let hashedPassword = await bcrypt.hash(updatedUser.hashed_password, 10);
+		updatedUser.hashed_password = hashedPassword
+	}
+	
 	const { data, error } = await supabase.from('users').update(updatedUser).eq('uuid', req.user.uuid);
 
 	if (error) {
