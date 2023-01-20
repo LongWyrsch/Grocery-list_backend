@@ -35,7 +35,7 @@ CREATE TABLE "recipes" (
   "quantity" numeric,
   "unit" text,
   "section" text NOT NULL,
-  "kCal" numeric,
+  "kcal" text NULL,
   "last_modified" timestamp NOT NULL DEFAULT ((now() at time zone 'utc')),
 );
 

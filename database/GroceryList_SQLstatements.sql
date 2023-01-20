@@ -70,7 +70,7 @@ CREATE TABLE recipes (
   quantity numeric NULL,
   unit text NULL,
   section text NOT NULL REFERENCES sections(section),
-  kCal numeric NULL,
+  kcal text NULL,
   last_modified timestamp with time zone NOT NULL DEFAULT (now() at time zone 'utc'),
   -- grid_position json NULL
 );
