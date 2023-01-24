@@ -41,7 +41,7 @@ module.exports = function (passport) {
 					let newUser = {
 						role: 'user',
 						language: language,
-						darkt_heme: false,
+						theme: 'light',
 						google_id: profile.id,
 						google_name: profile.displayName,
 						avatar_variant: 'beam',
@@ -50,7 +50,7 @@ module.exports = function (passport) {
 					const insertUser = await supabase.from('users').insert([newUser]);
 
 					if (insertUser.error) {
-						return cb(error.message);
+						return cb(insertUser.error.message);
 					}
 
 					user = newUser;

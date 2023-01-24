@@ -109,17 +109,23 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 		return;
 	}
 
-	const errorUser = await supabase.from('users').delete().eq('uuid', req.user.uuid).error;
+	const errorUser = await supabase.from('users').delete().eq('uuid', req.user.uuid);
 
-	if (errorUser) {
+	if (errorUser.error) {
 		errorMessage = 'Database delete operation failed';
 		console.error(errorMessage);
-		console.log(errorUser);
+		console.log(errorUser.error);
 		res.status(502).send(errorMessage);
 		return;
 	}
 
-	res.status(200).send('User successfully deleted');
+	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+		res.status(200).send();
+	});	
+
 });
 
 module.exports = router;
