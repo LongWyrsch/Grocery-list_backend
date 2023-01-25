@@ -6,6 +6,8 @@ const supabase = require('../supabase');
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
 const organizeIngredients = require('../utils/organizeIngredients') 
 
+const getKcal = require('../utils/getKcal')
+
 router.get('/', checkAuthenticated, async (req, res, next) => {
 	let allRecipes = await supabase.from('recipes').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
 	if (allRecipes.error) {
@@ -48,7 +50,16 @@ router.post('/join', checkAuthenticated, async(req,res,next)=> {
 // Add and modify 
 router.put('/', checkAuthenticated, async (req, res, next) => {
 	console.log('put /recipes')
-	let updatedIngredients = req.body;
+	let updatedIngredients = Array.from(req.body);
+
+	// Fetch kcal from USDA API before sending to database
+	
+	let promiseUpdatedCard = updatedIngredients.map(async(row) => {
+		const kcal = await getKcal(row.ingredient, row.quantity, row.unit)
+		return row.kcal ? row : { ...row, kcal: kcal };
+	});
+	updatedIngredients = await Promise.all(promiseUpdatedCard) // return await Promise.all(promiseUpdatedCard)
+	
 
 	const { data, error } = await supabase
 	.from('recipes')
