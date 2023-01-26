@@ -14,12 +14,19 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+app.set('trust proxy', 1)
 //Session__________________________________________________________________________________________________
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
+		cookie: {
+			sameSite: 'none',
+			secure: true,
+			maxAge: 1000 * 60 * 60 * 24 * 7 //One week
+		}
 	})
 );
 //Session__________________________________________________________________________________________________
