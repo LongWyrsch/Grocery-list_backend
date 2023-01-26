@@ -6,7 +6,7 @@ info:
         Some useful links:
         - [Grocery list backend repository](https://github.com/LongWyrsch/Grocery-list_backend)
 
-    termsOfService: http://localhost:3001/tos
+    termsOfService: https://mygrocerylists.netlify.app/tos
     contact:
         email: long.nqw@gmail.com
     version: 1.0.0
