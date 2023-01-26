@@ -46,6 +46,8 @@ module.exports = function (passport) {
 						google_name: profile.displayName,
 						avatar_variant: 'beam',
 						avatar_colors: randomColorsArray(),
+						layouts_recipes: {},
+						layouts_lists: {}
 					};
 					const insertUser = await supabase.from('users').insert([newUser]);
 
@@ -64,6 +66,8 @@ module.exports = function (passport) {
 						google_name: data[0].google_name,
 						avatar_variant: data[0].avatar_variant,
 						avatar_colors: data[0].avatar_colors,
+						layouts_recipes: data[0].layouts_recipes,
+						layouts_lists: data[0].layouts_lists,
 					};
 				}
 				return cb(null, user);

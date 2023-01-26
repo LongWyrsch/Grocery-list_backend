@@ -70,6 +70,8 @@ router.post('/signup', async (req, res) => {
 			theme: theme,
 			avatar_variant: 'beam',
 			avatar_colors: randomColorArray(),
+			layouts_recipes: {},
+			layouts_lists: {}
 		};
 		const insertUser = await supabase.from('users').insert([newUser]);
 

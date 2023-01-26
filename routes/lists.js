@@ -67,8 +67,14 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
     let operationError
 
     if (uuidToDelete) {
-		const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete).eq('user_uuid', req.user.uuid);
-        operationError = error
+		if (uuidToDelete = 'all') {
+			// Delete all ingredients before deleting user
+			const { error } = await supabase.from('lists').delete().eq('user_uuid', req.user.uuid);
+			operationError = error
+		} else {
+			const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete).eq('user_uuid', req.user.uuid);
+			operationError = error
+		}
     } else if (listToDelete) {
         const { error } = await supabase.from('lists').delete().eq('card_uuid', listToDelete).eq('user_uuid', req.user.uuid);
         operationError = error
@@ -82,7 +88,7 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 		return;
 	}
 
-	res.status(200);
+	res.status(200).send();
 });
 
 module.exports = router;
