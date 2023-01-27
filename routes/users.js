@@ -35,7 +35,7 @@ router.get('/', checkAuthenticated, (req, res, next) => {
 	res.status(200).send(user);
 });
 
-router.get('/logout', (req, res) => {
+router.get('/signout', checkAuthenticated, (req, res) => {
 	req.logout(function (err) {
 		if (err) {
 			return next(err);
@@ -105,7 +105,7 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 	if ((req.user.role === 'admin')) {
 		errorMessage = 'Cannot delete admin';
 		console.error(errorMessage);
-		res.status(502).send(errorMessage);
+		res.status(403).send(errorMessage);
 		return;
 	}
 

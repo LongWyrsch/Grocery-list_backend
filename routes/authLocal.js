@@ -17,7 +17,7 @@ router.post('/signin', (req, res, next) => {
 		if (typeof options !== 'undefined') {
 			// Can also generate a JSON response reflecting authentication status
 			console.log(res.locals.errMessage);
-			return res.status(403).send();
+			return res.status(403).send(res.locals.errMessage);
 		}
 
 		// The app uses a custom callback so that it can access the error messages. Therfore, the login() function must be manually implemented.

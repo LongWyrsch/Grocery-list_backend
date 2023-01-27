@@ -59,7 +59,7 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 	});
 	updatedIngredients = await Promise.all(promiseUpdatedCard) // return await Promise.all(promiseUpdatedCard)
 	
-
+	// Upsert will update existing data and insert new ones. It uses the Pprimary key to match.
 	const { data, error } = await supabase
 	.from('recipes')
 	.upsert(updatedIngredients)
@@ -76,7 +76,7 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 	res.status(200);
 });
 
-router.delete('/', checkAuthenticated, async (req, res, next) => {
+router.put('/delete', checkAuthenticated, async (req, res, next) => {
 	let uuidToDelete = req.body.row_uuid; // Delete some ingredients from a recipe
 	let recipeToDelete = req.body.card_uuid; // Delete an entire recipe
 

@@ -11,7 +11,6 @@ module.exports = function (passport) {
 				callbackURL: '/auth/google/callback',
 			},
 			async function (accessToken, refreshToken, profile, cb) {
-				// User.findOrCreate({ google_id: profile.id }, function (err, user) {
 				let user = {};
 				let { data, error } = await supabase.from('users').select('*').eq('google_id', profile.id);
 

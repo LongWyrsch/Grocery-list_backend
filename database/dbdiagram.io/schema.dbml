@@ -21,8 +21,8 @@ Table "users" {
   "theme" text [not null, default: light]
   "avatar_variant" text [not null]
   "avatar_colors" "varchar(6)[]" [not null]
-  "layouts_recipes" json NULL,
-  "layouts_lists" json NULL
+  "layouts_recipes" json nul null,
+  "layouts_lists" json nul null
 }
 
 Table "recipes" {

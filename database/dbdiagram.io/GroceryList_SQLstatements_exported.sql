@@ -21,8 +21,8 @@ CREATE TABLE "users" (
   "theme" text NOT NULL DEFAULT light,
   "avatar_variant" text NOT NULL,
   "avatar_colors" varchar(6)[] NOT NULL,
-  "layouts_recipes" json NULL,
-  "layouts_lists" json NULL
+  "layouts_recipes" json NOT NULL DEFAULT {},
+  "layouts_lists" json NOT NULL DEFAULT {}
 );
 
 CREATE TABLE "recipes" (
