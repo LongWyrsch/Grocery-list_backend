@@ -1,26 +1,26 @@
 openapi: 3.0.3
 info:
-    title: Grocery list backend - OpenAPI 3.0
+    title: Grocery lists backend - OpenAPI 3.0
     description: |-
-        This is a Grocery list backend server based on the OpenAPI 3.0 specification.
+        This is a Grocery lists backend server based on the OpenAPI 3.0 specification.
         Some useful links:
-        - [Grocery list backend repository](https://github.com/LongWyrsch/Grocery-list_backend)
+        - [Grocery lists backend repository](https://github.com/LongWyrsch/GroceryLists_backend)
 
     termsOfService: https://mygrocerylists.netlify.app/tos
     contact:
         email: long.nqw@gmail.com
     version: 1.0.0
 servers:
-    - url: http://localhost:3000
+    - url: https://mygrocerylists.up.railway.app
 tags:
     - name: auth
-      description: Creating and accessing accounts
+      description: Authenticating users
     - name: recipes
-      description: Access to recipes
+      description: Access recipes
     - name: lists
-      description: Acces to lists
+      description: Access lists
     - name: users
-      description: Access user details
+      description: Managing user accounts
 paths:
     /auth/google:
         get:
@@ -31,24 +31,35 @@ paths:
             operationId: googleAuthPt1
             responses:
                 '302':
-                    description: 'Redirected to Google OAuth 2.0'
+                    description: Found
     /auth/google/callback:
         get:
             tags:
                 - auth
             summary: 'Step 2 in Google OAuth 2.0 authentication'
-            description: Google redirects user to app
+            description: Google redirects user to server along with the profile and authorization code
             operationId: googleAuthPt2
             responses:
-                '200':
-                    description: 'User successfully authenticated'
-    /auth/local/login:
+                '302':
+                    description: Successfully authenticated. Redirecting user to home.
+                    headers:
+                        location:
+                            schema:
+                                type: string
+                                example: https://mygrocerylists.netlify.app/home/lists
+                            description: Redirect user to home
+                        set-cookie:
+                            schema:
+                                type: string
+                                example: connect.sid=...
+                            description: user session cookie
+    /auth/local/signin:
         post:
             tags:
                 - auth
-            summary: Local login
-            description: Login with email and password
-            operationId: localLogin
+            summary: Local signin
+            description: Sing in with email and password
+            operationId: localSignin
             requestBody:
                 description: User email and password
                 content:
@@ -68,15 +79,17 @@ paths:
             responses:
                 '200':
                     description: 'User successfully authenticated'
-                '400':
+                '403':
                     description: 'Wrong credentials provided'
-    /auth/local/register:
+                '500':
+                    description: ' Internal Server Error'
+    /auth/local/signup:
         post:
             tags:
                 - auth
-            summary: Local register
-            description: Register with email and password
-            operationId: localRegister
+            summary: Local signup
+            description: Sign up with email and password
+            operationId: localSignup
             requestBody:
                 description: User email and password
                 content:
@@ -95,14 +108,14 @@ paths:
                                 language:
                                     type: string
                                     example: 'EN'
-                                darkmode:
-                                    type: boolean
-                                    example: false
+                                theme:
+                                    type: string
+                                    example: light
                 required: true
             responses:
                 '201':
                     description: 'User successfully authenticated'
-                '400':
+                '403':
                     description: 'User with that email already exists.'
                 '500':
                     description: 'Supabase returned more than 1 user matching a given email.'
@@ -122,8 +135,8 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/User'
-                '502':
-                    description: 'Database select operation failed'
+                '401':
+                    description: Unauthorized
         put:
             tags:
                 - users
@@ -135,8 +148,16 @@ paths:
             responses:
                 '200':
                     description: User successfully updated
+                '400':
+                    description: User input invalid
+                '401':
+                    description: Unauthorized
+                '500':
+                    description: More than one user match provided email
+                '403':
+                    description: User with that email already exists
                 '502':
-                    description: 'Database update operation failed'
+                    description: Database update operation failed
         delete:
             tags:
                 - users
@@ -146,8 +167,24 @@ paths:
             responses:
                 '200':
                     description: User successfully deleted
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Cannot delete admin
                 '502':
-                    description: 'Database delete operation failed'
+                    description: Database delete operation failed
+    /users/signout:
+        get:
+            tags:
+                - users
+            summary: Sign user out
+            description: Sign user out
+            operationId: userSignout
+            responses:
+                '200':
+                    description: User successfully signed
+                '401':
+                    description: Unauthorized
     /recipes:
         get:
             tags:
@@ -161,20 +198,11 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    distinctRecipes:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                distinctvalues:
-                                                    type: string
-                                                    example: 'Thai Green Curry'
-                                    allRecipeIngredients:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/RecipeIngredient'
+                                type: array
+                                items:
+                                    type: array
+                                    items:
+                                        $ref: '#/components/schemas/RecipeIngredient'
                 '204':
                     description: 'User has no recipes'
                     content:
@@ -184,8 +212,58 @@ paths:
                                 items:
                                     type: string
                                 example: []
+                '401':
+                    description: Unauthorized
                 '502':
                     description: 'Database select operation failed'
+        put:
+            tags:
+                - recipes
+            summary: Update or add recipe ingredient
+            description: Update or add recipe ingredient
+            operationId: updateAddRecipeIngredient
+            requestBody:
+                $ref: '#/components/requestBodies/Recipe'
+            responses:
+                '200':
+                    description: Recipe ingredient successfully updated
+                '401':
+                    description: Unauthorized
+                '502':
+                    description: 'Database update operation failed'
+    /recipes/delete:
+        put:
+            tags:
+                - recipes
+            summary: Delete recipe or recipe ingredients
+            description: Delete recipe or recipe ingredients
+            operationId: deleteRecipeIngredient
+            requestBody:
+                description: Recipe uuid or array of ingredient uuids
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                row_uuid:
+                                    type: array
+                                    items:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                card_uuid:
+                                    type: string
+                                    format: uuid
+                                    example: '123e4567-e89b-12d3-a456-426614174000'
+                required: true
+            responses:
+                '200':
+                    description: Recipe ingredient successfully deleted
+                '401':
+                    description: Unauthorized
+                '502':
+                    description: 'Database delete operation failed'
+    /recipes/join:
         post:
             tags:
                 - recipes
@@ -193,54 +271,28 @@ paths:
             description: Create new recipe
             operationId: createRecipe
             requestBody:
-                $ref: '#/components/requestBodies/Recipe'
+                description: Recipe uuids to add to the new list
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                type: string
+                                example: '123e4567-e89b-12d3-a456-426614174000'
             responses:
-                '201':
-                    description: Recipe successfully created
+                '200':
+                    description: New list ingredients returned
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/RecipeIngredient'
+                '401':
+                    description: Unauthorized
                 '502':
                     description: 'Database insert operation failed'
-        put:
-            tags:
-                - recipes
-            summary: Update recipe ingredient
-            description: Update recipe ingredient
-            operationId: updateRecipeIngredient
-            requestBody:
-                $ref: '#/components/requestBodies/Recipe'
-            responses:
-                '200':
-                    description: Recipe ingredient successfully updated
-                '502':
-                    description: 'Database update operation failed'
-        delete:
-            tags:
-                - recipes
-            summary: Delete recipe or recipe ingredient
-            description: Delete recipe or recipe ingredient
-            operationId: deleteRecipeIngredient
-            parameters:
-                - name: uuid
-                  in: query
-                  description: Recipe ingredient uuid to delete
-                  required: false
-                  schema:
-                      type: array
-                      items:
-                          type: string
-                          format: uuid
-                          example: '123e4567-e89b-12d3-a456-426614174000'
-                - name: recipe
-                  in: query
-                  description: Recipe name to delete
-                  required: false
-                  schema:
-                      type: string
-                      example: 'Lasagna'
-            responses:
-                '200':
-                    description: Recipe ingredient successfully deleted
-                '502':
-                    description: 'Database delete operation failed'
     /lists:
         get:
             tags:
@@ -254,87 +306,59 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    distinctLists:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                distinctvalues:
-                                                    type: string
-                                                    example: 'Italian'
-                                    allListIngredients:
-                                        type: array
-                                        items:
-                                            $ref: '#/components/schemas/ListIngredient'
-                '204':
-                    description: 'User has no lists'
-                    content:
-                        application/json:
-                            schema:
                                 type: array
                                 items:
-                                    type: string
-                                example: []
+                                    type: array
+                                    items:
+                                        $ref: '#/components/schemas/ListIngredient'
+                '401':
+                    description: Unauthorized
                 '502':
                     description: 'Database select operation failed'
-        post:
-            tags:
-                - lists
-            summary: Create new list
-            description: Create new list
-            operationId: createList
-            requestBody:
-                $ref: '#/components/requestBodies/List'
-            responses:
-                '201':
-                    description: List successfully created
-                '502':
-                    description: 'Database insert operation failed'
         put:
             tags:
                 - lists
-            summary: Update list ingredient
-            description: Update list ingredient
-            operationId: updateListIngredient
+            summary: Upsert a list ingredient
+            description: Upsert a list ingredient
+            operationId: UpsertListIngredient
             requestBody:
-                description: Update a list ingredient
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/ListIngredient'
-                required: true
+                $ref: '#/components/requestBodies/List'
             responses:
                 '200':
                     description: List ingredient successfully updated
+                '401':
+                    description: Unauthorized
                 '502':
                     description: 'Database update operation failed'
-        delete:
+    /lists/delete:
+        put:
             tags:
                 - lists
             summary: Delete list or list ingredient
             description: Delete list or list ingredient
             operationId: deleteListIngredient
-            parameters:
-                - name: uuid
-                  in: query
-                  description: List ingredient uuid to delete
-                  required: false
-                  schema:
-                      type: string
-                      format: uuid
-                      example: '123e4567-e89b-12d3-a456-426614174000'
-                - name: list
-                  in: query
-                  description: List to delete
-                  required: false
-                  schema:
-                      type: string
-                      example: 'Italian'
+            requestBody:
+                description: List uuid or array of ingredient uuids
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                row_uuid:
+                                    type: array
+                                    items:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                card_uuid:
+                                    type: string
+                                    format: uuid
+                                    example: '123e4567-e89b-12d3-a456-426614174000'
             responses:
                 '200':
                     description: List ingredient successfully deleted
+                '401':
+                    description: Unauthorized
                 '502':
                     description: 'Database delete operation failed'
 components:
@@ -342,6 +366,10 @@ components:
         User:
             type: object
             properties:
+                uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
                 email:
                     type: string
                     format: email
@@ -349,9 +377,9 @@ components:
                 language:
                     type: string
                     example: ENG
-                darkmode:
-                    type: boolean
-                    example: false
+                theme:
+                    type: string
+                    example: light
                 google_name:
                     type: string
                     example: John Smith
@@ -365,6 +393,452 @@ components:
                         example: '#92A1C6'
                     minItems: 5
                     maxItems: 5
+                layouts_recipes:
+                    type: object
+                    properties:
+                        lg:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        md:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        sm:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        xs:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        xxs:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                layouts_lists:
+                    type: object
+                    properties:
+                        lg:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        md:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        sm:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        xs:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
+                        xxs:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    i:
+                                        type: string
+                                        format: uuid
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
+                                    x:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    y:
+                                        type: integer
+                                        format: int32
+                                        example: 0
+                                    w:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    h:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    maxW:
+                                        type: integer
+                                        format: int32
+                                        example: 2
+                                    minH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    maxH:
+                                        type: integer
+                                        format: int32
+                                        example: 5
+                                    isBounded:
+                                        type: boolean
+                                        example: true
         RecipeIngredient:
             type: object
             properties:
@@ -376,7 +850,11 @@ components:
                     type: string
                     format: uuid
                     example: '123e4567-e89b-12d3-a456-426614174000'
-                recipe:
+                card_uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
+                title:
                     type: string
                     example: Lasagna
                 ingredient:
@@ -394,6 +872,10 @@ components:
                 kCal:
                     type: number
                     example: 0
+                last_modified:
+                    type: string
+                    format: date-time
+                    example: '2023-01-01 16:07:18.103861+00'
                 index:
                     type: number
                     example: 1
@@ -405,6 +887,10 @@ components:
                     format: uuid
                     example: '123e4567-e89b-12d3-a456-426614174000'
                 user_uuid:
+                    type: string
+                    format: uuid
+                    example: '123e4567-e89b-12d3-a456-426614174000'
+                card_uuid:
                     type: string
                     format: uuid
                     example: '123e4567-e89b-12d3-a456-426614174000'
@@ -433,9 +919,14 @@ components:
                     type: string
                     format: date-time
                     example: '2023-01-01 16:07:18.103861+00'
+                recipes:
+                    type: array
+                    items:
+                        type: string
+                        example: 'Lasagna'
     requestBodies:
         Recipe:
-            description: Recipe ingredients that needs to be added to updated
+            description: Array of recipe ingredients
             required: true
             content:
                 application/json:
@@ -444,7 +935,7 @@ components:
                         items:
                             $ref: '#/components/schemas/RecipeIngredient'
         List:
-            description: List ingredients that needs to be added to updated
+            description: Array of list ingredients
             required: true
             content:
                 application/json:
