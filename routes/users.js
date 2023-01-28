@@ -3,7 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const supabase = require('../supabase');
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
-const { signupValidation, emailValidation, passwordValidation } = require('../utils/validator');
+const { updateUserSchema } = require('../validateRequests/validationSchemas');
+const validateRequests = require('../validateRequests/validateRequests');
 
 router.get('/', checkAuthenticated, (req, res, next) => {
 	let parsedLayoutsRecipes;
@@ -44,7 +45,7 @@ router.get('/signout', checkAuthenticated, (req, res) => {
 	});
 });
 
-router.put('/', checkAuthenticated, async (req, res, next) => {
+router.put('/', updateUserSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
 	let updatedUser = req.body;
 
 	// Convert grid layouts to JSON
@@ -53,9 +54,7 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 
 	// If user tried to change his email, validate it	
 	if (updatedUser.email !== req.user.email) {
-		const validate = emailValidation({ email: updatedUser.email});
-		if (validate.error) return res.status(400).send(validate.error.details[0].message);
-
+		
 		let { data, error } = await supabase.from('users').select('*').eq('email', updatedUser.email);
 		let errorMessage = '';
 
@@ -81,10 +80,8 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 	
 	// If user tried to change his password, validate it.
 	if ('hashed_password' in updatedUser && updatedUser.hashed_password !== '') {
-		const validate = passwordValidation({ password: updatedUser.hashed_password });
-		if (validate.error) return res.status(400).send(validate.error.details[0].message);
 
-		let hashedPassword = await bcrypt.hash(updatedUser.hashed_password, 10);
+		let hashedPassword = await bcrypt.hash(updatedUser.password, 10);
 		updatedUser.hashed_password = hashedPassword
 	}
 	

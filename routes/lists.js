@@ -3,8 +3,12 @@ const router = express.Router();
 
 const supabase = require('../supabase');
 
+const {body} = require('express-validator')
+
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
-const organizeIngredients = require('../utils/organizeIngredients') 
+const organizeIngredients = require('../utils/organizeIngredients'); 
+const { listsSchema, deleteIngredientsSchema } = require('../validateRequests/validationSchemas');
+const validateRequests = require('../validateRequests/validateRequests');
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
 	let allLists = await supabase.from('lists').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
@@ -26,9 +30,9 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 	
 });
 
-router.put('/', checkAuthenticated, async (req, res, next) => {
+router.put('/', listsSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
 	console.log('PUT /lists')
-	let updatedIngredients = req.body;
+	let updatedIngredients = validator.escape(req.body.ingredients);
 	const { data, error } = await supabase
 	.from('lists')
 	.upsert(updatedIngredients)
@@ -45,9 +49,9 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 	res.status(200);
 });
 
-router.put('/delete', checkAuthenticated, async (req, res, next) => {
-	let uuidToDelete = req.body.row_uuid;
-	let listToDelete = req.body.card_uuid;
+router.put('/delete', deleteIngredientsSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
+	let uuidToDelete = validator.escape(req.body.row_uuid);
+	let listToDelete = validator.escape(req.body.card_uuid);
 
     let operationError
 

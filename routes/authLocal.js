@@ -3,14 +3,14 @@ const router = express.Router();
 const passport = require('passport');
 const supabase = require('../supabase');
 const bcrypt = require('bcrypt');
-
 const randomColorArray = require('../utils/randomColorsArray');
-const { signupValidation, signinValidation } = require('../utils/validator');
+const validateRequests = require('../validateRequests/validateRequests');
+const { signupSchema, signinSchema } = require('../validateRequests/validationSchemas');
 
 // I was confused by the (req,res,next) appended at the end of passport.authenticate(...).
 // passport.authenticate(...) is a function returning a middleware. Like all middleware, you must pass it req,res and next.
 // Without next, it cannot call the next middleware in the stack.
-router.post('/signin', (req, res, next) => {
+router.post('/signin', signinSchema, validateRequests, (req, res, next) => {
 	passport.authenticate('local', (err, user, options) => {
 		if (err) return next(err); // will generate a 500 error
 
@@ -30,12 +30,8 @@ router.post('/signin', (req, res, next) => {
 	})(req, res, next); // <<== appended (req,res,next). Explanation above.
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', signupSchema, validateRequests, async (req, res) => {
 	const { email, password, theme, language } = req.body;
-
-	//Validate user input before calling database
-	const validate = signupValidation({ email: req.body.email, password: req.body.password });
-	if (validate.error) return res.status(400).send(validate.error.details[0].message);
 
 	let { data, error } = await supabase.from('users').select('*').eq('email', email);
 	let errorMessage = '';

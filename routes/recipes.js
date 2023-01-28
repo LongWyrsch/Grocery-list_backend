@@ -6,7 +6,9 @@ const supabase = require('../supabase');
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
 const organizeIngredients = require('../utils/organizeIngredients') 
 
-const getKcal = require('../utils/getKcal')
+const getKcal = require('../utils/getKcal');
+const { joinRecipesSchema, recipesSchema, deleteIngredientsSchema } = require('../validateRequests/validationSchemas');
+const validateRequests = require('../validateRequests/validateRequests');
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
 	let allRecipes = await supabase.from('recipes').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
@@ -27,7 +29,7 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 	res.status(200).send(organizedIngredientsArray)
 });
 
-router.post('/join', checkAuthenticated, async(req,res,next)=> {
+router.post('/join', joinRecipesSchema, validateRequests, checkAuthenticated, async(req,res,next)=> {
 	const selectedRecipes = req.body.selectedRecipes
 	const user_uuid = req.user.uuid
 	
@@ -48,9 +50,9 @@ router.post('/join', checkAuthenticated, async(req,res,next)=> {
 })
 
 // Add and modify 
-router.put('/', checkAuthenticated, async (req, res, next) => {
+router.put('/', recipesSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
 	console.log('put /recipes')
-	let updatedIngredients = Array.from(req.body);
+	let updatedIngredients = Array.from(req.body.ingredients);
 
 	// Fetch kcal from USDA API before sending to database
 	let promiseUpdatedCard = updatedIngredients.map(async(row) => {
@@ -76,7 +78,7 @@ router.put('/', checkAuthenticated, async (req, res, next) => {
 	res.status(200);
 });
 
-router.put('/delete', checkAuthenticated, async (req, res, next) => {
+router.put('/delete', deleteIngredientsSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
 	let uuidToDelete = req.body.row_uuid; // Delete some ingredients from a recipe
 	let recipeToDelete = req.body.card_uuid; // Delete an entire recipe
 

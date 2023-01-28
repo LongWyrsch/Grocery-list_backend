@@ -3,14 +3,10 @@ const bcrypt = require('bcrypt');
 
 const supabase = require('../supabase');
 
-const { signupValidation, signinValidation } = require('../utils/validator');
-
 module.exports = function (passport) {
 	passport.use(
 		new LocalStrategy({ usernameField: 'email' }, async function (email, password, done) {
-			//Validate user input before calling database
-			const validate = signinValidation({ email: email, password: password });
-			if (validate.error) return done(null, false, {message: validate.error.details[0].message});
+			
 			//Check if can match provided email with one of our users in the database.
 			let { data, error } = await supabase.from('users').select('*').eq('email', email);
 			
