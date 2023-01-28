@@ -40,6 +40,7 @@ INSERT INTO sections (section) VALUES
 ('meat'),
 ('seasonings'),
 ('grains'),
+('alcohol'),
 ('other');
 
 CREATE TABLE users (

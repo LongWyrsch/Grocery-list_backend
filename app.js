@@ -1,3 +1,4 @@
+const helmet = require('helmet')
 const express = require('express');
 const session = require('express-session');
 const app = express();
@@ -14,8 +15,11 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Helmet for security-related HTTP headers
+app.use(helmet())
 
-app.set('trust proxy', 1)
+
+app.set('trust proxy', 1) // I don't know what this does. 
 //Session__________________________________________________________________________________________________
 app.use(
 	session({
