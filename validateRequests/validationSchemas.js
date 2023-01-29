@@ -7,7 +7,7 @@ module.exports.signupSchema = [
 ]
 
 module.exports.signinSchema = [
-    body('email', 'password').exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches('foo', /[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
+    body('email', 'password').exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
 ]
 
 module.exports.updateUserSchema = [

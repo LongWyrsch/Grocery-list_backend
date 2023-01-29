@@ -13,13 +13,13 @@ const { signupSchema, signinSchema } = require('../validateRequests/validationSc
 router.post('/signin', signinSchema, validateRequests, (req, res, next) => {
 	passport.authenticate('local', (err, user, options) => {
 		if (err) return next(err); // will generate a 500 error
-
+		
 		if (typeof options !== 'undefined') {
 			// Can also generate a JSON response reflecting authentication status
 			console.log(res.locals.errMessage);
 			return res.status(403).send(res.locals.errMessage);
 		}
-
+		
 		// The app uses a custom callback so that it can access the error messages. Therfore, the login() function must be manually implemented.
 		req.login(user, (loginErr) => {
 			if (loginErr) {
