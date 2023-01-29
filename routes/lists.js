@@ -3,12 +3,13 @@ const router = express.Router();
 
 const supabase = require('../supabase');
 
-const {body} = require('express-validator')
+const { body } = require('express-validator');
 
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
-const organizeIngredients = require('../utils/organizeIngredients'); 
+const organizeIngredients = require('../utils/organizeIngredients');
 const { listsSchema, deleteIngredientsSchema } = require('../validateRequests/validationSchemas');
 const validateRequests = require('../validateRequests/validateRequests');
+const validateCSRF = require('../utils/validateCSRF');
 
 router.get('/', checkAuthenticated, async (req, res, next) => {
 	let allLists = await supabase.from('lists').select('*').eq('user_uuid', req.user.uuid).order('index', { ascending: true });
@@ -24,19 +25,15 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 		res.status(204).send([]);
 		return;
 	}
-	
-	let organizedIngredientsArray = organizeIngredients(allLists.data)
-	res.status(200).send(organizedIngredientsArray)
-	
+
+	let organizedIngredientsArray = organizeIngredients(allLists.data);
+	res.status(200).send(organizedIngredientsArray);
 });
 
-router.put('/', listsSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
-	console.log('PUT /lists')
-	let updatedIngredients = validator.escape(req.body.ingredients);
-	const { data, error } = await supabase
-	.from('lists')
-	.upsert(updatedIngredients)
-	.select()
+router.put('/', listsSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
+	console.log('PUT /lists');
+	let updatedIngredients = validator.escape(req.body.updatedCard);
+	const { data, error } = await supabase.from('lists').upsert(updatedIngredients).select();
 
 	if (error) {
 		errorMessage = 'Database update operation failed';
@@ -49,25 +46,25 @@ router.put('/', listsSchema, validateRequests, checkAuthenticated, async (req, r
 	res.status(200);
 });
 
-router.put('/delete', deleteIngredientsSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
+router.put('/delete', deleteIngredientsSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
 	let uuidToDelete = validator.escape(req.body.row_uuid);
 	let listToDelete = validator.escape(req.body.card_uuid);
 
-    let operationError
+	let operationError;
 
-    if (uuidToDelete) {
-		if (uuidToDelete = 'all') {
+	if (uuidToDelete) {
+		if ((uuidToDelete = 'all')) {
 			// Delete all ingredients before deleting user
 			const { error } = await supabase.from('lists').delete().eq('user_uuid', req.user.uuid);
-			operationError = error
+			operationError = error;
 		} else {
 			const { error } = await supabase.from('lists').delete().in('uuid', uuidToDelete).eq('user_uuid', req.user.uuid);
-			operationError = error
+			operationError = error;
 		}
-    } else if (listToDelete) {
-        const { error } = await supabase.from('lists').delete().eq('card_uuid', listToDelete).eq('user_uuid', req.user.uuid);
-        operationError = error
-    }
+	} else if (listToDelete) {
+		const { error } = await supabase.from('lists').delete().eq('card_uuid', listToDelete).eq('user_uuid', req.user.uuid);
+		operationError = error;
+	}
 
 	if (operationError) {
 		errorMessage = 'Database update operation failed';

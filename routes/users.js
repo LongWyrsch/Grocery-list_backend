@@ -5,6 +5,8 @@ const supabase = require('../supabase');
 const { checkAuthenticated, checkNotAuthenticated } = require('../passport/passportAuth');
 const { updateUserSchema } = require('../validateRequests/validationSchemas');
 const validateRequests = require('../validateRequests/validateRequests');
+const { v4: uuidv4 } = require('uuid');
+const validateCSRF = require('../utils/validateCSRF');
 
 router.get('/', checkAuthenticated, (req, res, next) => {
 	let parsedLayoutsRecipes;
@@ -21,6 +23,8 @@ router.get('/', checkAuthenticated, (req, res, next) => {
 		parsedLayoutsLists = {};
 	}
 
+	req.session.CSRF_token = uuidv4();
+
 	const user = {
 		uuid: req.user.uuid,
 		email: req.user.email,
@@ -31,6 +35,7 @@ router.get('/', checkAuthenticated, (req, res, next) => {
 		avatar_colors: req.user.avatar_colors,
 		layouts_recipes: parsedLayoutsRecipes,
 		layouts_lists: parsedLayoutsLists,
+		CSRF_token: req.session.CSRF_token,
 	};
 
 	res.status(200).send(user);
@@ -45,16 +50,15 @@ router.get('/signout', checkAuthenticated, (req, res) => {
 	});
 });
 
-router.put('/', updateUserSchema, validateRequests, checkAuthenticated, async (req, res, next) => {
-	let updatedUser = req.body;
+router.put('/', updateUserSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
+	let updatedUser = req.body.updatedUser;
 
 	// Convert grid layouts to JSON
 	updatedUser = { ...updatedUser, layouts_recipes: JSON.stringify(updatedUser.layouts_recipes) };
 	updatedUser = { ...updatedUser, layouts_lists: JSON.stringify(updatedUser.layouts_lists) };
 
-	// If user tried to change his email, validate it	
+	// If user tried to change his email, validate it
 	if (updatedUser.email !== req.user.email) {
-		
 		let { data, error } = await supabase.from('users').select('*').eq('email', updatedUser.email);
 		let errorMessage = '';
 
@@ -77,14 +81,13 @@ router.put('/', updateUserSchema, validateRequests, checkAuthenticated, async (r
 			return;
 		}
 	}
-	
+
 	// If user tried to change his password, validate it.
 	if ('hashed_password' in updatedUser && updatedUser.hashed_password !== '') {
-
 		let hashedPassword = await bcrypt.hash(updatedUser.password, 10);
-		updatedUser.hashed_password = hashedPassword
+		updatedUser.hashed_password = hashedPassword;
 	}
-	
+
 	const { data, error } = await supabase.from('users').update(updatedUser).eq('uuid', req.user.uuid);
 
 	if (error) {
@@ -98,8 +101,8 @@ router.put('/', updateUserSchema, validateRequests, checkAuthenticated, async (r
 	res.status(200).send();
 });
 
-router.delete('/', checkAuthenticated, async (req, res, next) => {
-	if ((req.user.role === 'admin')) {
+router.delete('/', checkAuthenticated, validateCSRF, async (req, res, next) => {
+	if (req.user.role === 'admin') {
 		errorMessage = 'Cannot delete admin';
 		console.error(errorMessage);
 		res.status(403).send(errorMessage);
@@ -121,8 +124,7 @@ router.delete('/', checkAuthenticated, async (req, res, next) => {
 			return next(err);
 		}
 		res.status(200).send();
-	});	
-
+	});
 });
 
 module.exports = router;

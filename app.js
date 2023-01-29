@@ -31,10 +31,11 @@ app.use(
 );
 //Session__________________________________________________________________________________________________
 
+
+//Passport_________________________________________________________________________________________________
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Passport_________________________________________________________________________________________________
 require('./passport/passportConfigGoogle.js')(passport);
 require('./passport/passportConfigLocal.js')(passport);
 require('./passport/passportConfigSerialize.js')(passport);
@@ -59,6 +60,7 @@ app.options('*', cors(corsOptions));
 
 app.use(cors(corsOptions));
 //Cors_________________________________________________________________________________________________
+
 
 app.use('/auth/google', require('./routes/authGoogle'));
 app.use('/auth/local', require('./routes/authLocal'));

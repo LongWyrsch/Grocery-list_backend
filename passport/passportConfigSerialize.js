@@ -15,7 +15,7 @@ module.exports = function (passport) {
 		let { data, error } = await supabase.from('users').select('*').eq(typeId, tempId);
 
 		if (error) {
-			return done(new Error('Error when deserializing: could not find user with provided Google id.'));
+			return done(new Error('Error when deserializing: could not find user with provided email or Google id.'));
 		}
 
 		let user = {

@@ -1,18 +1,18 @@
 const { body } = require("express-validator");
 
 module.exports.signupSchema = [
-    body('email', 'password').exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/), // [1] [2] [4]
+    body(['email', 'password']).exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/), // [1] [2] [4]
     body('theme').matches(/^(light|dark)$/), 
     body('language').matches(/^(EN|DE|FR)$/)
 ]
 
 module.exports.signinSchema = [
-    body('email', 'password').exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
+    body(['email', 'password']).exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
 ]
 
 module.exports.updateUserSchema = [
     body('uuid').escape().isUUID(4),
-    body('email', 'password').escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
+    body(['email', 'password']).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
     body('language').escape().matches(/^(EN|DE|FR)$/),
     body('theme').escape().matches(/^(light|dark)$/),
     body('google_name').escape(),
@@ -26,15 +26,15 @@ module.exports.joinRecipesSchema = [
 ]
 
 module.exports.recipesSchema = [
-    body('ingredients.*.uuid','ingredients.*.user_uuid','ingredients.*.card_uuid').escape().isUUID(),
-    body('ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified').escape(),
+    body(['ingredients.*.uuid','ingredients.*.user_uuid','ingredients.*.card_uuid']).escape().isUUID(),
+    body(['ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified']).escape(),
     body('ingredients.*.kcal').escape().isDecimal(),
     body('ingredients.*.index').escape().isInt()
 ]
 
 module.exports.listsSchema = [
-    body('ingredients.*.uuid','ingredients.*.user_uuid','ingredients.*.card_uuid').escape().isUUID(),
-    body('ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified').escape(),
+    body(['ingredients.*.uuid','ingredients.*.user_uuid','ingredients.*.card_uuid']).escape().isUUID(),
+    body(['ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified']).escape(),
     body('ingredients.*.index').escape().isInt(),
     body('ingredients.*.checked').escape().isBoolean(),
     body('ingredients.*.recipes.*').escape()
