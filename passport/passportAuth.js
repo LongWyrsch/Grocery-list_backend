@@ -1,3 +1,5 @@
+const { config } = require('../constants');
+
 // Before accessing any protected resources, make sure user is authenticated.
 function checkAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
@@ -9,7 +11,7 @@ function checkAuthenticated(req, res, next) {
 // If user access login page, make sure he's not already authenticated. If he is, redirect him to his Lists page.
 function checkNotAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
-		return res.redirect('https://mygrocerylists.netlify.app/home/lists');
+		return res.redirect(`${config.client_url}/home/lists`);
 	}
 	next();
 }

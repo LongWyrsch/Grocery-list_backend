@@ -1,0 +1,11 @@
+# POST https://mygrocerylists.up.railway.app/auth/local/signup HTTP/1.1
+POST http://localhost:3000/auth/local/signup HTTP/1.1
+Origin: https://localhost:3001
+Content-Type: application/json
+
+{
+    "email":"testuser",
+    "password":"password",
+    "theme":"light",
+    "language":"EN",
+}
