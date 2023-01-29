@@ -53,6 +53,9 @@ router.get('/signout', checkAuthenticated, (req, res) => {
 router.put('/', updateUserSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
 	let updatedUser = req.body.updatedUser;
 
+	console.log('put /users req.body: ', req.body)
+	console.log('put /users req.body.updatedUser: ', req.body.updatedUser)
+
 	// Convert grid layouts to JSON
 	updatedUser = { ...updatedUser, layouts_recipes: JSON.stringify(updatedUser.layouts_recipes) };
 	updatedUser = { ...updatedUser, layouts_lists: JSON.stringify(updatedUser.layouts_lists) };
@@ -87,6 +90,9 @@ router.put('/', updateUserSchema, validateRequests, validateCSRF, checkAuthentic
 		let hashedPassword = await bcrypt.hash(updatedUser.password, 10);
 		updatedUser.hashed_password = hashedPassword;
 	}
+
+	// Database doesn't store CSRF tokens.
+	delete updatedUser.CSRF_token
 
 	const { data, error } = await supabase.from('users').update(updatedUser).eq('uuid', req.user.uuid);
 

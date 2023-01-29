@@ -11,14 +11,14 @@ module.exports.signinSchema = [
 ]
 
 module.exports.updateUserSchema = [
-    body('uuid').escape().isUUID(4),
-    body(['email', 'password']).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
-    body('language').escape().matches(/^(EN|DE|FR)$/),
-    body('theme').escape().matches(/^(light|dark)$/),
-    body('google_name').escape(),
-    body('avatar_variant').escape().matches(/^(beam|marble|pixel|sunset|bauhaus|ring)$/),
-    body('avatar_colors.*').escape().isHexColor(),
-    body('layouts_recipes.*.*.*','layouts_lists.lg.*.').escape(), // [3]
+    body('updatedUser.uuid').optional({nullable: true, checkFalsy: true}).escape().isUUID(4),
+    body(['updatedUser.email', 'updatedUser.password']).optional({nullable: true, checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
+    body('updatedUser.language').optional({nullable: true, checkFalsy: true}).escape().matches(/^(EN|DE|FR)$/),
+    body('updatedUser.theme').optional({nullable: true, checkFalsy: true}).escape().matches(/^(light|dark)$/),
+    body('updatedUser.google_name').optional({nullable: true, checkFalsy: true}).escape(),
+    body('updatedUser.avatar_variant').optional({nullable: true, checkFalsy: true}).escape().matches(/^(beam|marble|pixel|sunset|bauhaus|ring)$/),
+    body('updatedUser.avatar_colors.*').optional({nullable: true, checkFalsy: true}).escape(),
+    body('updatedUser.layouts_recipes.*.*.*','layouts_lists.lg.*.').optional({nullable: true, checkFalsy: true}).escape(), // [3]
 ]
 
 module.exports.joinRecipesSchema = [
@@ -27,22 +27,22 @@ module.exports.joinRecipesSchema = [
 
 module.exports.recipesSchema = [
     body(['ingredients.*.uuid','ingredients.*.user_uuid','ingredients.*.card_uuid']).escape().isUUID(),
-    body(['ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified']).escape(),
-    body('ingredients.*.kcal').escape().isDecimal(),
+    body(['ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified']).optional({nullable: true, checkFalsy: true}).escape(),
+    body('ingredients.*.kcal').optional({nullable: true, checkFalsy: true}).escape().isDecimal(),
     body('ingredients.*.index').escape().isInt()
 ]
 
 module.exports.listsSchema = [
     body(['ingredients.*.uuid','ingredients.*.user_uuid','ingredients.*.card_uuid']).escape().isUUID(),
-    body(['ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified']).escape(),
+    body(['ingredients.*.title', 'ingredients.*.ingredient', 'ingredients.*.quantity', 'ingredients.*.unit', 'ingredients.*.section', 'ingredients.*.last_modified']).optional({nullable: true, checkFalsy: true}).escape(),
     body('ingredients.*.index').escape().isInt(),
     body('ingredients.*.checked').escape().isBoolean(),
-    body('ingredients.*.recipes.*').escape()
+    body('ingredients.*.recipes.*').optional({nullable: true, checkFalsy: true}).escape()
 ]
 
 module.exports.deleteIngredientsSchema = [
-    body('row_uuid.*').escape().isUUID(),
-    body('card_uuid').escape().isUUID()
+    body('row_uuid.*').optional({nullable: true, checkFalsy: true}).escape().isUUID(),
+    body('card_uuid').optional({nullable: true, checkFalsy: true}).escape().isUUID()
 ]
 
 

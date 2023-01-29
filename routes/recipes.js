@@ -53,7 +53,7 @@ router.post('/join', joinRecipesSchema, validateRequests, validateCSRF, checkAut
 // Add and modify
 router.put('/', recipesSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
 	console.log('put /recipes');
-	let updatedIngredients = Array.from(req.body.updatedCard);
+	let updatedIngredients = Array.from(req.body.ingredients);
 
 	// Fetch kcal from USDA API before sending to database
 	let promiseUpdatedCard = updatedIngredients.map(async (row) => {

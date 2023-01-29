@@ -32,7 +32,8 @@ router.get('/', checkAuthenticated, async (req, res, next) => {
 
 router.put('/', listsSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
 	console.log('PUT /lists');
-	let updatedIngredients = validator.escape(req.body.updatedCard);
+	let updatedIngredients = Array.from(req.body.ingredients);
+	
 	const { data, error } = await supabase.from('lists').upsert(updatedIngredients).select();
 
 	if (error) {
