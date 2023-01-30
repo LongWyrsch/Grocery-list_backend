@@ -11,9 +11,9 @@ CREATE TABLE languages (
 );
 
 INSERT INTO languages (language) VALUES 
-('DE'),
-('EN'),
-('FR');
+('de'),
+('en'),
+('fr');
 
 -- CREATE TABLE units (
 --   unit text PRIMARY KEY
@@ -50,7 +50,7 @@ CREATE TABLE users (
   google_id text UNIQUE NULL,
   google_name text NULL,
   role text NOT NULL DEFAULT 'user' REFERENCES roles(role),
-  language text NOT NULL DEFAULT 'EN' REFERENCES languages(language),
+  language text NOT NULL DEFAULT 'en' REFERENCES languages(language),
   theme text NOT NULL DEFAULT light,
   avatar_variant text NOT NULL,
   avatar_colors varchar(7)[5] NOT NULL,

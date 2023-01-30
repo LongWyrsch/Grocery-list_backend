@@ -17,7 +17,7 @@ Table "users" {
   "google_id" text [unique, null]
   "google_name" text [null]
   "role" text [not null, default: 'user', ref: > roles.role]
-  "language" text [not null, default: 'EN', ref: > languages.language]
+  "language" text [not null, default: 'en', ref: > languages.language]
   "theme" text [not null, default: light]
   "avatar_variant" text [not null]
   "avatar_colors" "varchar(6)[]" [not null]

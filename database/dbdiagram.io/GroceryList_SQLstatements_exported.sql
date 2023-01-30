@@ -17,7 +17,7 @@ CREATE TABLE "users" (
   "google_id" text UNIQUE,
   "google_name" text,
   "role" text NOT NULL DEFAULT 'user',
-  "language" text NOT NULL DEFAULT 'EN',
+  "language" text NOT NULL DEFAULT 'en',
   "theme" text NOT NULL DEFAULT light,
   "avatar_variant" text NOT NULL,
   "avatar_colors" varchar(6)[] NOT NULL,

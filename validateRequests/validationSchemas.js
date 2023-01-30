@@ -3,7 +3,7 @@ const { body } = require("express-validator");
 module.exports.signupSchema = [
     body(['email', 'password']).exists({checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/), // [1] [2] [4]
     body('theme').matches(/^(light|dark)$/), 
-    body('language').matches(/^(EN|DE|FR)$/)
+    body('language').matches(/^(en|de|fr)$/)
 ]
 
 module.exports.signinSchema = [
@@ -13,7 +13,7 @@ module.exports.signinSchema = [
 module.exports.updateUserSchema = [
     body('updatedUser.uuid').optional({nullable: true, checkFalsy: true}).escape().isUUID(4),
     body(['updatedUser.email', 'updatedUser.password']).optional({nullable: true, checkFalsy: true}).escape().isLength({ min: 6 }).matches(/[\w[\]`!@#$%^&*()={}:;<>+'-]*/),
-    body('updatedUser.language').optional({nullable: true, checkFalsy: true}).escape().matches(/^(EN|DE|FR)$/),
+    body('updatedUser.language').optional({nullable: true, checkFalsy: true}).escape().matches(/^(en|de|fr)$/),
     body('updatedUser.theme').optional({nullable: true, checkFalsy: true}).escape().matches(/^(light|dark)$/),
     body('updatedUser.google_name').optional({nullable: true, checkFalsy: true}).escape(),
     body('updatedUser.avatar_variant').optional({nullable: true, checkFalsy: true}).escape().matches(/^(beam|marble|pixel|sunset|bauhaus|ring)$/),

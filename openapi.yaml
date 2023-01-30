@@ -107,7 +107,7 @@ paths:
                                     example: 123password
                                 language:
                                     type: string
-                                    example: 'EN'
+                                    example: 'en'
                                 theme:
                                     type: string
                                     example: light
@@ -376,7 +376,7 @@ components:
                     example: 'example@domain.com'
                 language:
                     type: string
-                    example: ENG
+                    example: en
                 theme:
                     type: string
                     example: light

@@ -26,17 +26,8 @@ module.exports = function (passport) {
 					});
 				} else if (data.length === 0) {
 					// add that user
-					let language = '';
-					switch (profile._json.locale.slice(0, 2)) {
-						case 'de':
-							language = 'DE';
-							break;
-						case 'fr':
-							language = 'FR';
-							break;
-						default:
-							language = 'EN';
-					}
+					let language = profile._json.locale.slice(0, 2)
+					
 					let newUser = {
 						role: 'user',
 						language: language,

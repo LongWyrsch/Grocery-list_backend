@@ -6,7 +6,7 @@ Content-Type: application/json
     "email":"ssssdasfff",
     "password":"password",
     "theme":"light",
-    "language":"EN"
+    "language":"en"
 }
 
 ###
@@ -19,5 +19,5 @@ Content-Type: application/json
     "email":"ssssdasfff",
     "password":"password",
     "theme":"light",
-    "language":"EN"
+    "language":"en"
 }
