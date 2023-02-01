@@ -7,7 +7,7 @@ async function getKcal (ingredient, quantity, unit) {
     let nutrients = []
     let kcal100g = 0
 	try {
-		const searchParams = new URLSearchParams({api_key: process.env.REACT_APP_FOODDATA_API_KEY, query: ingredient, pageSize: 1, pageNumber: 1});
+		const searchParams = new URLSearchParams({api_key: process.env.FOODDATA_API_KEY, query: ingredient, pageSize: 1, pageNumber: 1});
 		let response = await fetch(
 			`https://api.nal.usda.gov/fdc/v1/foods/search?${searchParams}`
 		);
