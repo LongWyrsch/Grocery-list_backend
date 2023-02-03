@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export NODE_ENV='development' && node app.js"
+    "test": "jest --detectOpenHandles --coverage --watchAll --silent --verbose",
+    "start": "node app.js",
+    "dev": "export NODE_ENV='development' && node app.js"
   },
   "author": "Long Wyrsch",
   "license": "ISC",
@@ -23,5 +24,11 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "jest": "^29.4.1",
+    "jsdom": "^21.1.0",
+    "supertest": "^6.3.3"
   }
 }

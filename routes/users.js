@@ -9,6 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const validateCSRF = require('../utils/validateCSRF');
 
 router.get('/', checkAuthenticated, (req, res, next) => {
+	console.log('GET users/ called')
 	let parsedLayoutsRecipes;
 	try {
 		parsedLayoutsRecipes = JSON.parse(req.user.layouts_recipes);

@@ -1,0 +1,11 @@
+.grid .tick {
+	color: lightgray;
+}
+
+.chartContainer {
+	width: 4000px;
+	overflow-x: scroll;
+	/* white-space: nowrap; */
+}
+
+

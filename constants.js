@@ -12,8 +12,7 @@ const development = {
 	cookie: null
 };
 
-module.exports.config = process.env.NODE_ENV === 'development' ? development : production;
-
+module.exports.config = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' ? development : production;
 
 // process.env.NODE_ENV is undefined. 
 // I have to specify in "start": "export NODE_ENV='development' && nodemon app.js"
