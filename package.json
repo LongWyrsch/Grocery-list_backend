@@ -2,11 +2,12 @@
   "name": "grocery-list_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --coverage --watchAll --silent --verbose",
-    "start": "node app.js",
-    "dev": "export NODE_ENV='development' && node app.js"
+    "test": "jest --detectOpenHandles --watchAll --coverage --silent --verbose",
+    "longtest": "jest --detectOpenHandles ",
+    "start": "node server.js",
+    "dev": "export NODE_ENV='development' && node server.js"
   },
   "author": "Long Wyrsch",
   "license": "ISC",

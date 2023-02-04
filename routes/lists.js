@@ -44,17 +44,17 @@ router.put('/', listsSchema, validateRequests, validateCSRF, checkAuthenticated,
 		return;
 	}
 
-	res.status(200);
+	res.status(200).send();
 });
 
 router.put('/delete', deleteIngredientsSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
-	let uuidToDelete = validator.escape(req.body.row_uuid);
-	let listToDelete = validator.escape(req.body.card_uuid);
+	let uuidToDelete = req.body.row_uuid;
+	let listToDelete = req.body.card_uuid;
 
 	let operationError;
 
 	if (uuidToDelete) {
-		if ((uuidToDelete = 'all')) {
+		if ((uuidToDelete === 'all')) {
 			// Delete all ingredients before deleting user
 			const { error } = await supabase.from('lists').delete().eq('user_uuid', req.user.uuid);
 			operationError = error;

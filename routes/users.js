@@ -83,15 +83,16 @@ router.put('/', updateUserSchema, validateRequests, validateCSRF, checkAuthentic
 		}
 	}
 
-	// If user tried to change his password, validate it.
+	// If user tried to change his password, hash it.
 	if ('hashed_password' in updatedUser && updatedUser.hashed_password !== '') {
 		let hashedPassword = await bcrypt.hash(updatedUser.password, 10);
 		updatedUser.hashed_password = hashedPassword;
 	}
 
-	// Database doesn't store CSRF tokens.
+	// Database doesn't store CSRF tokens. Remove from object before updating database.
 	delete updatedUser.CSRF_token
 
+	// Update database
 	const { data, error } = await supabase.from('users').update(updatedUser).eq('uuid', req.user.uuid);
 
 	if (error) {

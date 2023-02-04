@@ -73,7 +73,7 @@ router.put('/', recipesSchema, validateRequests, validateCSRF, checkAuthenticate
 		return;
 	}
 
-	res.status(200);
+	res.status(200).send();
 });
 
 router.put('/delete', deleteIngredientsSchema, validateRequests, validateCSRF, checkAuthenticated, async (req, res, next) => {
@@ -83,7 +83,7 @@ router.put('/delete', deleteIngredientsSchema, validateRequests, validateCSRF, c
 	let operationError;
 
 	if (uuidToDelete) {
-		if ((uuidToDelete = 'all')) {
+		if (uuidToDelete === 'all') {
 			// Delete all ingredients before deleting user
 			const { error } = await supabase.from('recipes').delete().eq('user_uuid', req.user.uuid);
 			operationError = error;
@@ -95,7 +95,7 @@ router.put('/delete', deleteIngredientsSchema, validateRequests, validateCSRF, c
 		const { error } = await supabase.from('recipes').delete().eq('card_uuid', recipeToDelete).eq('user_uuid', req.user.uuid);
 		operationError = error;
 	}
-
+	
 	if (operationError) {
 		errorMessage = 'Database update operation failed';
 		console.error(errorMessage);
@@ -103,7 +103,7 @@ router.put('/delete', deleteIngredientsSchema, validateRequests, validateCSRF, c
 		res.status(502).send(errorMessage);
 		return;
 	}
-
+	
 	res.status(200).send();
 });
 

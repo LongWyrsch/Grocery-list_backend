@@ -16,3 +16,5 @@ module.exports.config = process.env.NODE_ENV === 'development' || process.env.NO
 
 // process.env.NODE_ENV is undefined. 
 // I have to specify in "start": "export NODE_ENV='development' && nodemon app.js"
+
+// I'm not sure what is the value of process.env.NODE_ENV when running "npm start"... 

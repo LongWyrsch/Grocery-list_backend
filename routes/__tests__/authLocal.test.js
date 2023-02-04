@@ -1,48 +1,72 @@
-const app = require('../../app')
-// .withCredentials()
+const app = require('../../app');
 
 const request = require('supertest');
 
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
+describe('user signin process', () => {
+	it('rejects signin requests with missing credentials', async () => {
+		let res = await request(app)
+			.post('/auth/local/signin')
+			// .set('Access-Control-Allow-Credentials', 'true')
+			// .set('Origin', 'http://localhost:3001/signin')
+			// .set('Content-Type', 'application/json')
+			.send({ email: process.env.TESTUSER_USERNAME });
+		expect(res.status).toEqual(400);
+	});
+	it('rejects signin requests with empty credentials', async () => {
+		let res = await request(app).post('/auth/local/signin').send({ email: '', password: process.env.TESTUSER_PASSWORD });
+		expect(res.status).toEqual(400);
+	});
+	it('rejects signin requests with credentials shorter than 6 characters', async () => {
+		let res = await request(app).post('/auth/local/signin').send({ email: '1234', password: process.env.TESTUSER_PASSWORD });
+		expect(res.status).toEqual(400);
+	});
+	it('rejects signin requests with an unknown email', async () => {
+		let res = await request(app).post('/auth/local/signin').send({ email: 'inexistentEmail', password: process.env.TESTUSER_PASSWORD });
+		expect(res.status).toEqual(403);
+	});
+	it('rejects signin requests with an unmatched password', async () => {
+		let res = await request(app).post('/auth/local/signin').send({ email: process.env.TESTUSER_USERNAME, password: 'inexistentPassword' });
+		expect(res.status).toEqual(403);
+	});
+	it('successfully sign in user with valid credentials', async () => {
+		let res = await request(app).post('/auth/local/signin').send({ email: process.env.TESTUSER_USERNAME, password: process.env.TESTUSER_PASSWORD })
+        expect(res.status).toEqual(200)
+	});
+});
 
-// Function using jsdom to return HTML element.
-const parseTextFromHTML = (htmlAsString, selector) => {
-    const selectedElement = new JSDOM(htmlAsString).window.document.querySelector(selector);
-    if (selectedElement !== null) {
-        return selectedElement.textContent;
-    } else {
-        throw new Error(`No element with selector ${selector} found in HTML string`);
-    }
-};
-
-describe('user authentication', () => {
-	it('rejects authentication requests with missing credentials', async () => {
+describe('user signup process', () => {
+	it('rejects signup requests with invalid language or theme', async () => {
+		let res = await request(app)
+            .post('/auth/local/signup')
+            .send({ 
+                email: 'validUsername', 
+                password: 'validPassword',
+                language: 'invalidLanguage',
+                theme: 'invalidTheme' 
+            });
+            expect(res.status).toEqual(400)
+    });
+	it('rejects signup requests with already-existing email', async () => {
         let res = await request(app)
-            .post('/signin')
-            .set('Content-Type', 'application/json')
-            .send({email: ''})
-            .expect(400)
-        
-            // expect(res.status).toEqual(400)
-
+        .post('/auth/local/signup')
+        .send({ 
+            email: process.env.TESTUSER_USERNAME, 
+            password: 'validPassword',
+            language: 'en',
+            theme: 'light' 
+        });
+        expect(res.status).toEqual(403)
     });
-	it('rejects authentication requests with empty credentials', async () => {
-
+	it('successfully sign up user with valid credentials', async () => {
+        let res = await request(app)
+        .post('/auth/local/signup')
+        .send({ 
+            email: 'validUsername', 
+            password: 'validPassword',
+            language: 'en',
+            theme: 'light' 
+        });
+        expect(res.status).toEqual(201)
     });
-	it('rejects authentication requests with credentials shorter than 6 characters', async () => {
-
-    });
-	it('rejects authentication requests with credentials with a backslash character', async () => {
-
-    });
-	it('rejects authentication requests with an unknown email', async () => {
-
-    });
-	it('rejects authentication requests with an unmatched password', async () => {
-
-    });
-	it('successfully authenticates valid user credentials', async () => {
-
-    });
+	
 });

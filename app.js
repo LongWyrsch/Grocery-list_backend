@@ -68,8 +68,6 @@ app.use('/users', require('./routes/users'));
 app.use('/recipes', require('./routes/recipes'));
 app.use('/lists', require('./routes/lists'));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, console.log(`Server started on port ${PORT}`));
 
 
-module.export = app
+module.exports = app
