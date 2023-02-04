@@ -276,10 +276,17 @@ paths:
                 content:
                     application/json:
                         schema:
-                            type: array
-                            items:
-                                type: string
-                                example: '123e4567-e89b-12d3-a456-426614174000'
+                            type: object
+                            properties:
+                                CSRF_token:
+                                    type: string
+                                    format: uuid
+                                    example: '123e4567-e89b-12d3-a456-426614174000'
+                                selectedRecipes:
+                                    type: array
+                                    items:
+                                        type: string
+                                        example: '123e4567-e89b-12d3-a456-426614174000'
             responses:
                 '200':
                     description: New list ingredients returned
