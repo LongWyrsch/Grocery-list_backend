@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.66% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/24</span>
+                <span class='fraction'>21/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/12</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.45% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/22</span>
+                <span class='fraction'>20/22</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -116,30 +116,30 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">356x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -156,30 +156,30 @@
 		let response = await fetch(
 			`https://api.nal.usda.gov/fdc/v1/foods/search?${searchParams}`
 		);
-<span class="cstat-no" title="statement not covered" >        fooddata = await response.json()</span>
-<span class="cstat-no" title="statement not covered" >        nutrients = fooddata.foods[0].foodNutrients;</span>
-<span class="cstat-no" title="statement not covered" >        kcal100g = nutrients.filter(<span class="fstat-no" title="function not covered" >(n</span>utrient) =&gt; <span class="cstat-no" title="statement not covered" >nutrient.unitName === 'KCAL')</span>[0].value;</span>
+        fooddata = await response.json()
+        nutrients = fooddata.foods[0].foodNutrients;
+        kcal100g = nutrients.filter((nutrient) =&gt; nutrient.unitName === 'KCAL')[0].value;
 	} catch (e) {
-		return '-';
+<span class="cstat-no" title="statement not covered" >		return '-';</span>
 	}
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (typeof(kcal100g) !== 'number') <span class="cstat-no" title="statement not covered" >return '-'</span></span>
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof(kcal100g) !== 'number') <span class="cstat-no" title="statement not covered" >return '-'</span>
 &nbsp;
 	// All quantity must be converted to g because API gives kCal per 100g.
     // Assume all food have density of water. Convert all to g.
     // Ex: 1 tbsp of sugar is the g equivalent of 1 tbsp of water.
-	let updatedQuantity = <span class="cstat-no" title="statement not covered" >quantity;</span>
-<span class="cstat-no" title="statement not covered" >	if (unit === 'L' || unit === 'kg') {</span>
+	let updatedQuantity = quantity;
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (unit === 'L' || unit === 'kg') {
 <span class="cstat-no" title="statement not covered" >		updatedQuantity *= 1000;</span>
-	} else <span class="cstat-no" title="statement not covered" >if (unit === 'tsp') {</span>
-<span class="cstat-no" title="statement not covered" >		updatedQuantity *= 4.92892;</span>
-	} else <span class="cstat-no" title="statement not covered" >if (unit === 'tbsp') {</span>
-<span class="cstat-no" title="statement not covered" >		updatedQuantity *= 236.588;</span>
+	} else if (unit === 'tsp') {
+		updatedQuantity *= 4.92892;
+	} else if (unit === 'tbsp') {
+		updatedQuantity *= 236.588;
 	}
 &nbsp;
     // console.log('ingredient: ', ingredient, ', kcal100g: ', kcal100g, ', quantity: ', quantity)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	return Math.trunc(kcal100g * updatedQuantity / 100);</span>
+	return Math.trunc(kcal100g * updatedQuantity / 100);
 };
 &nbsp;
 module.exports = getKcal;
@@ -190,7 +190,7 @@ module.exports = getKcal;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-02-04T12:55:06.268Z
+                at 2024-08-30T14:01:03.978Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
