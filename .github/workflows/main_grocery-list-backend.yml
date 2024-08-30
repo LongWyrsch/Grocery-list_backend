@@ -59,4 +59,4 @@ jobs:
           app-name: 'grocery-list-backend'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_10F67F5EA2094AD9B65023126EA2707E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EF3314A27C7B4B109AA06E151D1ABFC5 }}
