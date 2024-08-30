@@ -7,7 +7,7 @@
     "test": "jest --detectOpenHandles --watchAll --coverage --silent --verbose",
     "longtest": "jest --detectOpenHandles ",
     "start": "node server.js",
-    "dev": "export NODE_ENV='development' && node server.js"
+    "dev": "export NODE_ENV='development' && nodemon server.js"
   },
   "author": "Long Wyrsch",
   "license": "ISC",
