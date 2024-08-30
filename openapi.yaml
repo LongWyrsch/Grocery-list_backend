@@ -11,7 +11,7 @@ info:
         email: long.nqw@gmail.com
     version: 1.0.0
 servers:
-    - url: https://mygrocerylists.up.railway.app
+    - url: https://grocery-list-backend-chf6hbgrgeh7f3bu.canadaeast-01.azurewebsites.net
 tags:
     - name: auth
       description: Authenticating users
