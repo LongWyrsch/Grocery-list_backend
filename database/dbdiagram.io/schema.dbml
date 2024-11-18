@@ -17,12 +17,12 @@ Table "users" {
   "google_id" text [unique, null]
   "google_name" text [null]
   "role" text [not null, default: 'user', ref: > roles.role]
-  "language" text [not null, default: 'en', ref: > languages.language]
-  "theme" text [not null, default: light]
+  "language" text [not null, default: 'EN', ref: > languages.language]
+  "theme" boolean [not null, default: 'light']
   "avatar_variant" text [not null]
   "avatar_colors" "varchar(6)[]" [not null]
-  "layouts_recipes" json nul null,
-  "layouts_lists" json nul null
+  "layouts_recipes" json [not null]
+  "layouts_lists" json [not null]
 }
 
 Table "recipes" {
@@ -35,7 +35,7 @@ Table "recipes" {
   "quantity" numeric [null]
   "unit" text [null]
   "section" text [not null, ref: > sections.section]
-  "kcal" text [null]
+  "kCal" numeric [null]
   "last_modified" timestamp [not null, default: `(now() at time zone 'utc')`]
 }
 
